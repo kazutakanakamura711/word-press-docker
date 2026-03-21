@@ -1,0 +1,27 @@
+# 環境変数
+.env
+
+# WP本体
+src/wp-admin/
+src/wp-includes/
+src/wp-*.php
+src/index.php
+src/license.txt
+src/readme.html
+src/xmlrpc.php
+src/.htaccess
+
+# wp-content直下
+src/wp-content/index.php
+src/wp-content/languages/
+src/wp-content/uploads/
+src/wp-content/plugins/
+src/wp-content/cache/
+src/wp-content/upgrade/
+
+# デフォルトテーマ
+src/wp-content/themes/twentytwenty*/
+src/wp-content/themes/index.php
+
+# 自作テーマは管理する（除外しない）
+!src/wp-content/themes/my-theme/
