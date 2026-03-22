@@ -1,0 +1,14 @@
+@use "variables" as v;
+
+body {
+  font-family: v.$font-base;
+  color: v.$color-text;
+  background-color: v.$color-bg;
+  line-height: 1.7;
+}
+
+.l-container {
+  max-width: v.$container-width;
+  margin: 0 auto;
+  padding: 0 v.$space-l;
+}

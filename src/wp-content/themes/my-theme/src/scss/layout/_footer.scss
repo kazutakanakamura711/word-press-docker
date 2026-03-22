@@ -1,0 +1,19 @@
+@use "../foundation/variables" as v;
+
+.l-footer {
+  width: 100%;
+  background-color: #333;
+  padding: v.$space-xl v.$space-l;
+  margin-top: v.$space-xxl;
+
+  &__inner {
+    max-width: v.$container-width;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  &__copy {
+    font-size: 1.2rem;
+    color: #fff;
+  }
+}

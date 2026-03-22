@@ -1,0 +1,53 @@
+@use "../foundation/variables" as v;
+
+.l-header {
+  width: 100%;
+  background-color: v.$color-bg;
+  border-bottom: 1px solid v.$color-border;
+  padding: v.$space-m v.$space-l;
+
+  &__inner {
+    max-width: v.$container-width;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__logo {
+    font-size: 2rem;
+    font-weight: bold;
+
+    a {
+      color: v.$color-text;
+    }
+  }
+
+  &__nav-list {
+    display: flex;
+    align-items: center;
+
+    // wp_nav_menu()が生成するul
+    ul {
+      display: flex;
+      gap: v.$space-l;
+    }
+
+    // wp_nav_menu()が生成するli
+    li {
+      display: flex;
+      align-items: center;
+    }
+
+    // aタグ
+    a {
+      font-size: 1.4rem;
+      color: v.$color-text;
+      transition: color 0.3s;
+
+      &:hover {
+        color: v.$color-primary;
+      }
+    }
+  }
+}
