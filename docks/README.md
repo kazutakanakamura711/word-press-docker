@@ -30,6 +30,36 @@ docker compose down
 
 ---
 
+## セットアップ・開発コマンド（Makefile）
+
+プロジェクトルートで `make` コマンドを使って操作します。
+
+| コマンド       | 内容                                    |
+| -------------- | --------------------------------------- |
+| `make up`      | Docker を起動する                       |
+| `make down`    | Docker を停止する                       |
+| `make install` | npm install を実行する（初回のみ）      |
+| `make watch`   | SCSS の変更を監視してビルドする         |
+| `make dev`     | Docker 起動 + SCSS 監視を同時に開始する |
+
+### 初回セットアップ
+
+```bash
+make up       # Docker起動
+make install  # npm install
+make watch    # SCSS監視開始
+```
+
+### 2回目以降の開発
+
+```bash
+make dev  # Docker起動 + SCSS監視を一括実行
+```
+
+> SCSS を編集すると自動で `assets/css/style.css` がビルドされ、`http://localhost:8080` に反映されます。
+
+---
+
 ## ディレクトリ構成
 
 ```
@@ -147,3 +177,102 @@ WORD-PRESS-DOCKER/
 > ```bash
 > cp .env.example .env
 > ```
+
+---
+
+## CSS 設計方針（FLOCSS + BEM）
+
+**FLOCSS のプレフィックスでファイルと役割を分類し、BEM で Block\_\_Element--Modifier を命名する。**
+
+### プレフィックスと対応ディレクトリ
+
+| プレフィックス | 役割                            | SCSSファイル          |
+| -------------- | ------------------------------- | --------------------- |
+| `l-`           | Layout：ページ全体のレイアウト  | `src/scss/layout/`    |
+| `c-`           | Component：汎用的な UI パーツ   | `src/scss/component/` |
+| `p-`           | Project：ページ固有のスタイル   | `src/scss/project/`   |
+| `u-`           | Utility：単機能のユーティリティ | `src/scss/utility/`   |
+
+### 各プレフィックスの役割
+
+**`l-`（Layout）：サイト全体の骨格を作るもの**
+
+```scss
+.l-header {
+} // ヘッダー全体
+.l-footer {
+} // フッター全体
+.l-container {
+} // 幅制限のコンテナ
+.l-main {
+} // メインコンテンツ
+```
+
+**`c-`（Component）：再利用できる部品**
+
+```scss
+.c-button {
+} // どのページでも使えるボタン
+.c-card {
+} // どのページでも使えるカード
+.c-title {
+} // どのページでも使える見出し
+```
+
+**`p-`（Project）：特定のページだけで使うもの**
+
+```scss
+.p-home {
+} // トップページだけ
+.p-home__hero {
+} // トップページのヒーロー
+.p-doctor {
+} // 医師紹介ページだけ
+```
+
+**`u-`（Utility）：単一の目的を持つ補助クラス**
+
+```scss
+.u-hidden {
+} // 非表示
+.u-text-center {
+} // テキスト中央揃え
+.u-mt-10 {
+} // margin-top: 10px
+```
+
+### 命名例
+
+```scss
+// l-（Layout）+ BEM
+.l-header {
+}
+.l-header__inner {
+}
+.l-header__logo {
+}
+
+// c-（Component）+ BEM
+.c-button {
+}
+.c-button--primary {
+}
+.c-button--small {
+}
+
+// p-（Project）+ BEM
+.p-home {
+}
+.p-home__hero {
+}
+.p-home__hero--large {
+}
+```
+
+### BEM の命名規則
+
+| 記法              | 意味                                  | 例                   |
+| ----------------- | ------------------------------------- | -------------------- |
+| `Block`           | 独立したコンポーネント                | `.c-button`          |
+| `Block__Element`  | Block を構成する要素（`__` 区切り）   | `.c-button__icon`    |
+| `Block--Modifier` | Block のバリエーション（`--` 区切り） | `.c-button--primary` |
