@@ -90,27 +90,44 @@ word-press-docker/
 
 ### 手順
 
-**① ローカルでテーマを作成・編集**
+**① ビルドを実行する**
 
-`src/wp-content/themes/` 以下にオリジナルテーマのフォルダを作成して開発します。
+```bash
+make build
+```
 
-**② FileZilla でテーマフォルダをアップロード**
+SCSS のコンパイルと画像のコピーが行われ、`assets/` が最新の状態になります。
 
-ローカルのテーマフォルダ:
+**② アップロード対象のファイルを確認する**
+
+`src/wp-content/themes/my-theme/` の中で以下のみをアップロードします。
 
 ```
-src/wp-content/themes/オリジナルテーマ名/
+my-theme/
+├── assets/          ← ビルド済みCSS・画像
+├── inc/             ← PHP設定ファイル
+├── template-parts/  ← テンプレートパーツ
+├── *.php            ← テーマのPHPファイル
+└── style.css        ← テーマ認識用（必須）
 ```
+
+> 以下はアップロード**不要**です。
+>
+> - `src/`（SCSSなどのソースファイル）
+> - `node_modules/`（npmパッケージ）
+> - `package.json`, `vite.config.js` 等のビルド設定
+
+**③ FileZilla でテーマフォルダをアップロード**
 
 アップロード先（レンタルサーバー）:
 
 ```
-public_html/wp-content/themes/オリジナルテーマ名/
+public_html/wp-content/themes/my-theme/
 ```
 
 ※ `public_html` はレンタルサーバーによって `www/` や `htdocs/` の場合もあります。
 
-**③ 本番の WordPress 管理画面でテーマを有効化**
+**④ 本番の WordPress 管理画面でテーマを有効化**
 
 1. `本番ドメイン/wp-admin` にログイン
 2. 「外観」→「テーマ」を開く

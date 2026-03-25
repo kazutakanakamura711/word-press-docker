@@ -1,0 +1,82 @@
+// Applicationsページ
+@use "../foundation/variables" as v;
+
+.p-applications {
+  padding: v.$space-xxl v.$space-l;
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: v.$space-xxl;
+  }
+
+  &__item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: v.$space-xl;
+    align-items: center;
+
+    // 偶数番目は画像を右に
+    &:nth-child(even) {
+      .p-applications__image {
+        order: 2;
+      }
+      .p-applications__body {
+        order: 1;
+      }
+    }
+
+    @media (max-width: v.$breakpoint-tab) {
+      grid-template-columns: 1fr;
+
+      &:nth-child(even) {
+        .p-applications__image {
+          order: unset;
+        }
+        .p-applications__body {
+          order: unset;
+        }
+      }
+    }
+  }
+
+  &__image img {
+    width: 100%;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  &__title {
+    font-size: 2.4rem;
+    font-weight: bold;
+    margin-bottom: v.$space-m;
+  }
+
+  &__text {
+    font-size: 1.6rem;
+    line-height: 1.8;
+    margin-bottom: v.$space-m;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: v.$space-xs;
+    list-style: none;
+    margin-bottom: v.$space-m;
+  }
+
+  &__tag {
+    font-size: 1.2rem;
+    background-color: #f0f0f0;
+    color: #555;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  &__links {
+    display: flex;
+    gap: v.$space-m;
+    margin-top: v.$space-m;
+  }
+}

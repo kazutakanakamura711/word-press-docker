@@ -8,7 +8,16 @@ body {
 }
 
 .l-container {
+  width: 100%;
   max-width: v.$container-width;
   margin: 0 auto;
-  padding: 0 v.$space-l;
+  padding-inline: v.$space-l;
+}
+
+.l-main {
+  margin-top: v.$header-height;
+}
+
+p {
+  word-break: break-word; // 長い単語・URLも折り返す
 }

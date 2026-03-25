@@ -13,10 +13,13 @@ export default defineConfig({
     rollupOptions: {
       input: {
         style: path.resolve(__dirname, "src/scss/style.scss"),
+        main: path.resolve(__dirname, "src/ts/main.ts"),
       },
       output: {
         // CSSの出力先
         assetFileNames: "css/[name][extname]",
+        // JSの出力先
+        entryFileNames: "js/[name].js",
       },
     },
   },

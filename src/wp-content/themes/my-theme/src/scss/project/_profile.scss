@@ -1,0 +1,100 @@
+// Profileページ
+@use "../foundation/variables" as v;
+
+.p-profile {
+  padding: v.$space-xxl v.$space-l;
+
+  &__intro {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: v.$space-xxl;
+    align-items: flex-start;
+    margin-bottom: v.$space-xxl;
+
+    @media (max-width: v.$breakpoint-tab) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__avatar {
+    img {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    @media (max-width: v.$breakpoint-tab) {
+      max-width: 240px;
+      margin: 0 auto;
+    }
+  }
+
+  &__name {
+    font-size: 2.8rem;
+    font-weight: bold;
+    margin-bottom: v.$space-l;
+  }
+
+  &__bio {
+    font-size: 1.6rem;
+    line-height: 1.8;
+    min-width: 0;
+  }
+
+  &__skills {
+    border-top: 1px solid v.$color-border;
+    padding-top: v.$space-xxl;
+  }
+
+  &__skills-heading {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: v.$space-l;
+  }
+
+  &__skills-list {
+    display: flex;
+    flex-direction: column;
+    gap: v.$space-m;
+  }
+
+  &__skills-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: v.$space-m;
+    align-items: flex-start;
+    padding-bottom: v.$space-m;
+    border-bottom: 1px solid v.$color-border;
+
+    @media (max-width: v.$breakpoint-sp) {
+      grid-template-columns: 1fr;
+      gap: v.$space-s;
+    }
+  }
+
+  &__skills-category {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: v.$color-primary;
+    padding-top: v.$space-xs;
+  }
+
+  &__skills-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: v.$space-s;
+    margin: 0;
+  }
+
+  &__skills-item {
+    background-color: #f0f4ff;
+    color: v.$color-primary;
+    border: 1px solid v.$color-primary;
+    padding: v.$space-xs v.$space-m;
+    border-radius: 999px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+}

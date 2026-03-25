@@ -1,0 +1,85 @@
+@use "../foundation/variables" as v;
+@use "../foundation/mixins" as m;
+
+.p-contact {
+  padding: v.$space-xxl 0;
+
+  // フォームエリアを中央寄せ・最大幅制限
+  &__form {
+    max-width: 640px;
+    margin: 0 auto;
+    margin-top: v.$space-xl;
+
+    .wpcf7-form {
+      display: flex;
+      flex-direction: column;
+      gap: v.$space-l;
+    }
+
+    .wpcf7-form-control-wrap {
+      display: block;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      padding: v.$space-m;
+      border: 1px solid v.$color-border;
+      border-radius: 4px;
+      font-size: 1.6rem;
+      font-family: v.$font-base;
+      transition: border-color 0.3s;
+      background-color: #fafafa;
+
+      &:focus {
+        outline: none;
+        border-color: v.$color-primary;
+        background-color: #fff;
+      }
+    }
+
+    textarea {
+      min-height: 160px;
+      resize: vertical;
+    }
+
+    input[type="submit"] {
+      width: 100%;
+      padding: v.$space-m v.$space-xl;
+      background-color: v.$color-primary;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 1.6rem;
+      cursor: pointer;
+      transition: opacity 0.3s;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+
+    .wpcf7-not-valid-tip {
+      font-size: 1.2rem;
+      color: #e00;
+      margin-top: v.$space-xs;
+      display: block;
+    }
+
+    .wpcf7-response-output {
+      padding: v.$space-m;
+      border-radius: 4px;
+      font-size: 1.4rem;
+      border: 1px solid v.$color-border;
+      margin-top: v.$space-m;
+    }
+  }
+
+  &__lead {
+    font-size: 1.6rem;
+    color: v.$color-text;
+    text-align: center;
+    margin-top: v.$space-m;
+  }
+}
