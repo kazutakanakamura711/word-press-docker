@@ -60,6 +60,55 @@ make dev  # Docker起動 + SCSS監視を一括実行
 
 ---
 
+## コード品質（ESLint / Prettier / Husky）
+
+`my-theme/` ディレクトリ内で以下のコマンドを使用します。
+
+### コマンド一覧
+
+| コマンド           | 内容                                           |
+| ------------------ | ---------------------------------------------- |
+| `npm run lint`     | TypeScript のLintチェック（ESLint）            |
+| `npm run lint:fix` | TypeScript のLint自動修正                      |
+| `npm run format`   | TS / SCSS / PHP ファイルを Prettier で一括整形 |
+
+```bash
+cd src/wp-content/themes/my-theme
+
+npm run lint        # Lintチェック
+npm run lint:fix    # 自動修正
+npm run format      # 全ファイル整形
+```
+
+### 各ツールの役割
+
+**ESLint**  
+TypeScript（`src/ts/`）の構文エラーやコード品質をチェックします。設定ファイル: `eslint.config.js`
+
+**Prettier**  
+TS / SCSS / PHP のコードスタイルを統一します。設定ファイル: `.prettierrc`
+
+| 対象 | インデント | クォート |
+| ---- | ---------- | -------- |
+| TS   | 2スペース  | ダブル   |
+| SCSS | 2スペース  | ダブル   |
+| PHP  | 4スペース  | シングル |
+
+**Husky + lint-staged**  
+`git commit` 時にステージングされたファイルに対して自動で Lint / Prettier を実行します。問題があればコミットがブロックされます。
+
+```
+コミット時の自動処理:
+  *.ts   → ESLint --fix + Prettier
+  *.scss → Prettier
+  *.php  → Prettier
+```
+
+> `npm install` 実行時に `prepare` スクリプトで Git の hooksPath が自動設定されます。  
+> 別マシンで clone した場合も `make install` を実行すれば有効になります。
+
+---
+
 ## ディレクトリ構成
 
 ```

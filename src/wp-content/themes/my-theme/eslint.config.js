@@ -4,6 +4,7 @@ import prettierConfig from "eslint-config-prettier";
 import prettierPlugin from "eslint-plugin-prettier";
 
 export default tseslint.config(
+  { ignores: ["assets/**", "node_modules/**"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   prettierConfig,

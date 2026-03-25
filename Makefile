@@ -14,6 +14,7 @@ install:
 
 # src/images/ を assets/images/ にコピー
 copy-images:
+	rm -rf src/wp-content/themes/my-theme/assets/images
 	mkdir -p src/wp-content/themes/my-theme/assets/images
 	cp -r src/wp-content/themes/my-theme/src/images/. src/wp-content/themes/my-theme/assets/images/
 
