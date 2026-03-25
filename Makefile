@@ -1,4 +1,4 @@
-.PHONY: up down install watch dev
+.PHONY: up down install copy-images build watch dev
 
 # Docker起動
 up:
@@ -11,6 +11,15 @@ down:
 # npm install（初回セットアップ時に実行）
 install:
 	cd src/wp-content/themes/my-theme && npm install
+
+# src/images/ を assets/images/ にコピー
+copy-images:
+	mkdir -p src/wp-content/themes/my-theme/assets/images
+	cp -r src/wp-content/themes/my-theme/src/images/. src/wp-content/themes/my-theme/assets/images/
+
+# CSSビルド + 画像コピー
+build: copy-images
+	cd src/wp-content/themes/my-theme && npm run build
 
 # SCSSの変更を監視してビルド
 watch:

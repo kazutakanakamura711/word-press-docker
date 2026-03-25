@@ -1,0 +1,14 @@
+@use "variables" as v;
+
+// ブレークポイント
+@mixin sp {
+  @media screen and (max-width: v.$breakpoint-sp) {
+    @content;
+  }
+}
+
+@mixin tab {
+  @media screen and (max-width: v.$breakpoint-tab) {
+    @content;
+  }
+}
