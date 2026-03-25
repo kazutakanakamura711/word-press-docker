@@ -63,28 +63,38 @@
 
 // ドロワーナビ（ヘッダー外・独立スタッキングコンテキスト）
 .l-header__nav {
-  // PC: ヘッダーに重ねて右端に固定表示
+  // PC: コンテナ右端に合わせて固定表示
   position: fixed;
   top: 0;
-  right: v.$space-l;
+  left: 0;
+  right: 0;
   height: v.$header-height;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  padding-right: max(#{v.$space-l}, calc((100vw - #{v.$container-width}) / 2));
+  pointer-events: none; // 背景部分のクリックを通す
   z-index: 100;
 
+  > * {
+    pointer-events: auto; // nav項目はクリック有効
+  }
+
   @include m.tab {
-    // SP/タブ: ドロワー
-    position: fixed;
-    top: 0;
+    // SP/タブ: ドロワー（PCスタイルを上書き）
+    left: auto;
     right: 0;
     width: 75vw;
     max-width: 320px;
     height: 100dvh;
     background-color: v.$color-bg;
     padding: 80px v.$space-l v.$space-l;
+    justify-content: flex-start;
+    align-items: flex-start;
+    pointer-events: auto;
     transform: translateX(100%);
     transition: transform 0.3s ease;
-    z-index: 300; // オーバーレイ(200)より上
+    z-index: 300;
 
     &.is-open {
       transform: translateX(0);
