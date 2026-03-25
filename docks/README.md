@@ -30,6 +30,85 @@ docker compose down
 
 ---
 
+## セットアップ・開発コマンド（Makefile）
+
+プロジェクトルートで `make` コマンドを使って操作します。
+
+| コマンド       | 内容                                    |
+| -------------- | --------------------------------------- |
+| `make up`      | Docker を起動する                       |
+| `make down`    | Docker を停止する                       |
+| `make install` | npm install を実行する（初回のみ）      |
+| `make watch`   | SCSS の変更を監視してビルドする         |
+| `make dev`     | Docker 起動 + SCSS 監視を同時に開始する |
+
+### 初回セットアップ
+
+```bash
+make up       # Docker起動
+make install  # npm install
+make watch    # SCSS監視開始
+```
+
+### 2回目以降の開発
+
+```bash
+make dev  # Docker起動 + SCSS監視を一括実行
+```
+
+> SCSS を編集すると自動で `assets/css/style.css` がビルドされ、`http://localhost:8080` に反映されます。
+
+---
+
+## コード品質（ESLint / Prettier / Husky）
+
+`my-theme/` ディレクトリ内で以下のコマンドを使用します。
+
+### コマンド一覧
+
+| コマンド           | 内容                                           |
+| ------------------ | ---------------------------------------------- |
+| `npm run lint`     | TypeScript のLintチェック（ESLint）            |
+| `npm run lint:fix` | TypeScript のLint自動修正                      |
+| `npm run format`   | TS / SCSS / PHP ファイルを Prettier で一括整形 |
+
+```bash
+cd src/wp-content/themes/my-theme
+
+npm run lint        # Lintチェック
+npm run lint:fix    # 自動修正
+npm run format      # 全ファイル整形
+```
+
+### 各ツールの役割
+
+**ESLint**  
+TypeScript（`src/ts/`）の構文エラーやコード品質をチェックします。設定ファイル: `eslint.config.js`
+
+**Prettier**  
+TS / SCSS / PHP のコードスタイルを統一します。設定ファイル: `.prettierrc`
+
+| 対象 | インデント | クォート |
+| ---- | ---------- | -------- |
+| TS   | 2スペース  | ダブル   |
+| SCSS | 2スペース  | ダブル   |
+| PHP  | 4スペース  | シングル |
+
+**Husky + lint-staged**  
+`git commit` 時にステージングされたファイルに対して自動で Lint / Prettier を実行します。問題があればコミットがブロックされます。
+
+```
+コミット時の自動処理:
+  *.ts   → ESLint --fix + Prettier
+  *.scss → Prettier
+  *.php  → Prettier
+```
+
+> `npm install` 実行時に `prepare` スクリプトで Git の hooksPath が自動設定されます。  
+> 別マシンで clone した場合も `make install` を実行すれば有効になります。
+
+---
+
 ## ディレクトリ構成
 
 ```
@@ -60,27 +139,44 @@ word-press-docker/
 
 ### 手順
 
-**① ローカルでテーマを作成・編集**
+**① ビルドを実行する**
 
-`src/wp-content/themes/` 以下にオリジナルテーマのフォルダを作成して開発します。
+```bash
+make build
+```
 
-**② FileZilla でテーマフォルダをアップロード**
+SCSS のコンパイルと画像のコピーが行われ、`assets/` が最新の状態になります。
 
-ローカルのテーマフォルダ:
+**② アップロード対象のファイルを確認する**
+
+`src/wp-content/themes/my-theme/` の中で以下のみをアップロードします。
 
 ```
-src/wp-content/themes/オリジナルテーマ名/
+my-theme/
+├── assets/          ← ビルド済みCSS・画像
+├── inc/             ← PHP設定ファイル
+├── template-parts/  ← テンプレートパーツ
+├── *.php            ← テーマのPHPファイル
+└── style.css        ← テーマ認識用（必須）
 ```
+
+> 以下はアップロード**不要**です。
+>
+> - `src/`（SCSSなどのソースファイル）
+> - `node_modules/`（npmパッケージ）
+> - `package.json`, `vite.config.js` 等のビルド設定
+
+**③ FileZilla でテーマフォルダをアップロード**
 
 アップロード先（レンタルサーバー）:
 
 ```
-public_html/wp-content/themes/オリジナルテーマ名/
+public_html/wp-content/themes/my-theme/
 ```
 
 ※ `public_html` はレンタルサーバーによって `www/` や `htdocs/` の場合もあります。
 
-**③ 本番の WordPress 管理画面でテーマを有効化**
+**④ 本番の WordPress 管理画面でテーマを有効化**
 
 1. `本番ドメイン/wp-admin` にログイン
 2. 「外観」→「テーマ」を開く
@@ -147,3 +243,102 @@ WORD-PRESS-DOCKER/
 > ```bash
 > cp .env.example .env
 > ```
+
+---
+
+## CSS 設計方針（FLOCSS + BEM）
+
+**FLOCSS のプレフィックスでファイルと役割を分類し、BEM で Block\_\_Element--Modifier を命名する。**
+
+### プレフィックスと対応ディレクトリ
+
+| プレフィックス | 役割                            | SCSSファイル          |
+| -------------- | ------------------------------- | --------------------- |
+| `l-`           | Layout：ページ全体のレイアウト  | `src/scss/layout/`    |
+| `c-`           | Component：汎用的な UI パーツ   | `src/scss/component/` |
+| `p-`           | Project：ページ固有のスタイル   | `src/scss/project/`   |
+| `u-`           | Utility：単機能のユーティリティ | `src/scss/utility/`   |
+
+### 各プレフィックスの役割
+
+**`l-`（Layout）：サイト全体の骨格を作るもの**
+
+```scss
+.l-header {
+} // ヘッダー全体
+.l-footer {
+} // フッター全体
+.l-container {
+} // 幅制限のコンテナ
+.l-main {
+} // メインコンテンツ
+```
+
+**`c-`（Component）：再利用できる部品**
+
+```scss
+.c-button {
+} // どのページでも使えるボタン
+.c-card {
+} // どのページでも使えるカード
+.c-title {
+} // どのページでも使える見出し
+```
+
+**`p-`（Project）：特定のページだけで使うもの**
+
+```scss
+.p-home {
+} // トップページだけ
+.p-home__hero {
+} // トップページのヒーロー
+.p-doctor {
+} // 医師紹介ページだけ
+```
+
+**`u-`（Utility）：単一の目的を持つ補助クラス**
+
+```scss
+.u-hidden {
+} // 非表示
+.u-text-center {
+} // テキスト中央揃え
+.u-mt-10 {
+} // margin-top: 10px
+```
+
+### 命名例
+
+```scss
+// l-（Layout）+ BEM
+.l-header {
+}
+.l-header__inner {
+}
+.l-header__logo {
+}
+
+// c-（Component）+ BEM
+.c-button {
+}
+.c-button--primary {
+}
+.c-button--small {
+}
+
+// p-（Project）+ BEM
+.p-home {
+}
+.p-home__hero {
+}
+.p-home__hero--large {
+}
+```
+
+### BEM の命名規則
+
+| 記法              | 意味                                  | 例                   |
+| ----------------- | ------------------------------------- | -------------------- |
+| `Block`           | 独立したコンポーネント                | `.c-button`          |
+| `Block__Element`  | Block を構成する要素（`__` 区切り）   | `.c-button__icon`    |
+| `Block--Modifier` | Block のバリエーション（`--` 区切り） | `.c-button--primary` |

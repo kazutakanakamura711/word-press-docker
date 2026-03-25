@@ -1,0 +1,23 @@
+@use "variables" as v;
+
+body {
+  font-family: v.$font-base;
+  color: v.$color-text;
+  background-color: v.$color-bg;
+  line-height: 1.7;
+}
+
+.l-container {
+  width: 100%;
+  max-width: v.$container-width;
+  margin: 0 auto;
+  padding-inline: v.$space-l;
+}
+
+.l-main {
+  margin-top: v.$header-height;
+}
+
+p {
+  word-break: break-word; // 長い単語・URLも折り返す
+}

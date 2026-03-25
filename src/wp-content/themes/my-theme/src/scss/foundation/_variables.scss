@@ -1,0 +1,28 @@
+// _variables.scss
+
+// カラー
+$color-primary: #0a84ff;
+$color-text: #333333;
+$color-bg: #ffffff;
+$color-border: #dddddd;
+
+// フォント
+$font-base: "Noto Sans JP", sans-serif;
+
+// 余白
+$space-xs: 4px;
+$space-s: 8px;
+$space-m: 16px;
+$space-l: 24px;
+$space-xl: 40px;
+$space-xxl: 80px;
+
+// ブレークポイント
+$breakpoint-sp: 768px;
+$breakpoint-tab: 1024px;
+
+// コンテナ幅
+$container-width: 1200px;
+
+// ヘッダー高さ
+$header-height: 64px;

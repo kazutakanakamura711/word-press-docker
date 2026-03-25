@@ -1,0 +1,44 @@
+{
+  "name": "my-theme",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "watch": "vite build --watch",
+    "lint": "eslint src/ts",
+    "lint:fix": "eslint src/ts --fix",
+    "format": "prettier --write src/ts src/scss \"**/*.php\"",
+    "prepare": "cd ../../../../ && git config core.hooksPath src/wp-content/themes/my-theme/.husky"
+  },
+  "lint-staged": {
+    "src/ts/**/*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "src/scss/**/*.scss": [
+      "prettier --write"
+    ],
+    "**/*.php": [
+      "prettier --write"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@prettier/plugin-php": "^0.24.0",
+    "eslint": "^10.1.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.1",
+    "sass": "^1.98.0",
+    "typescript-eslint": "^8.57.2",
+    "vite": "^8.0.1"
+  }
+}

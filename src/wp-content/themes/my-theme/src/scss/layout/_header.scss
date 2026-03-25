@@ -1,0 +1,163 @@
+@use "../foundation/variables" as v;
+@use "../foundation/mixins" as m;
+
+.l-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: v.$header-height;
+  background-color: v.$color-bg;
+  border-bottom: 1px solid v.$color-border;
+  padding: 0 v.$space-l;
+  display: flex;
+  align-items: center;
+  z-index: 100;
+
+  &__inner {
+    width: 100%;
+    max-width: v.$container-width;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__logo {
+    font-size: 2rem;
+    font-weight: bold;
+
+    a {
+      color: v.$color-text;
+    }
+  }
+
+  &__hamburger {
+    display: none; // PCは非表示
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    width: 44px;
+    height: 44px;
+    padding: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 300;
+
+    @include m.tab {
+      display: flex; // モバイルのみ表示
+    }
+  }
+
+  &__hamburger-line {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: v.$color-text;
+    transition:
+      transform 0.3s ease,
+      opacity 0.3s ease;
+  }
+}
+
+// ドロワーナビ（ヘッダー外・独立スタッキングコンテキスト）
+.l-header__nav {
+  // PC: ヘッダーに重ねて右端に固定表示
+  position: fixed;
+  top: 0;
+  right: v.$space-l;
+  height: v.$header-height;
+  display: flex;
+  align-items: center;
+  z-index: 100;
+
+  @include m.tab {
+    // SP/タブ: ドロワー
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 75vw;
+    max-width: 320px;
+    height: 100dvh;
+    background-color: v.$color-bg;
+    padding: 80px v.$space-l v.$space-l;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 300; // オーバーレイ(200)より上
+
+    &.is-open {
+      transform: translateX(0);
+    }
+  }
+}
+
+// ドロワー内×ボタン
+.l-header__nav-close {
+  display: none; // PC非表示
+
+  @include m.tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 2.4rem;
+    color: v.$color-text;
+    line-height: 1;
+  }
+}
+
+.l-header__nav-list {
+  display: flex;
+  align-items: center;
+  gap: v.$space-l;
+
+  @include m.tab {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: v.$space-m;
+  }
+
+  // wp_nav_menu()が生成するul（サブメニュー）
+  ul {
+    display: flex;
+    gap: v.$space-l;
+  }
+
+  // wp_nav_menu()が生成するli
+  li {
+    display: flex;
+    align-items: center;
+  }
+
+  // wp_nav_menu()が生成するaタグ
+  a {
+    font-size: 1.4rem;
+    color: v.$color-text;
+    transition: color 0.3s;
+
+    &:hover {
+      color: v.$color-primary;
+    }
+  }
+}
+
+// オーバーレイ
+.l-header-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 200;
+
+  &.is-active {
+    display: block;
+  }
+}
