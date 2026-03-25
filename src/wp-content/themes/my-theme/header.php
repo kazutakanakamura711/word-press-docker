@@ -21,11 +21,11 @@
     </div>
 </header>
 <nav class="l-header__nav">
-    <?php wp_nav_menu(array(
+    <?php wp_nav_menu([
         'theme_location' => 'header-menu',
-        'menu_class'     => 'l-header__nav-list',
-        'link_class'     => 'l-header__nav-link',
-        'container'      => false,
-    )); ?>
+        'menu_class' => 'l-header__nav-list',
+        'link_class' => 'l-header__nav-link',
+        'container' => false,
+    ]); ?>
 </nav>
 <div class="l-header-overlay" aria-hidden="true"></div>

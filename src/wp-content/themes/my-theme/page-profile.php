@@ -15,7 +15,9 @@ the_post();
             <div class="p-profile__intro">
                 <div class="p-profile__avatar">
                     <img
-                        src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/img-profile.webp'); ?>"
+                        src="<?php echo esc_url(
+                            get_template_directory_uri() . '/assets/images/img-profile.webp',
+                        ); ?>"
                         alt="<?php echo esc_attr(get_bloginfo('name')); ?>"
                         loading="lazy"
                     >
@@ -28,42 +30,51 @@ the_post();
 
             <?php
             // スキルカテゴリ定義（ACFフィールド名 => 表示ラベル）
-            $skill_categories = array(
-                'skill_lang'  => '言語',
-                'skill_fw'    => 'FW・ライブラリ',
-                'skill_ui'    => 'UI',
-                'skill_api'   => 'API',
-                'skill_orm'   => 'ORM',
-                'skill_cms'   => 'CMS',
-                'skill_task'  => 'タスク管理',
-                'skill_comm'  => 'コミュニケーション',
-                'skill_ai'    => 'AIツール',
+            $skill_categories = [
+                'skill_lang' => '言語',
+                'skill_fw' => 'FW・ライブラリ',
+                'skill_ui' => 'UI',
+                'skill_api' => 'API',
+                'skill_orm' => 'ORM',
+                'skill_cms' => 'CMS',
+                'skill_task' => 'タスク管理',
+                'skill_comm' => 'コミュニケーション',
+                'skill_ai' => 'AIツール',
                 'skill_other' => 'その他',
-            );
+            ];
 
             $has_skills = false;
             foreach ($skill_categories as $field_name => $label) {
-                if (get_field($field_name)) { $has_skills = true; break; }
+                if (get_field($field_name)) {
+                    $has_skills = true;
+                    break;
+                }
             }
             ?>
-            <?php if ($has_skills) : ?>
+            <?php if ($has_skills): ?>
             <div class="p-profile__skills">
                 <h3 class="p-profile__skills-heading">Skills</h3>
                 <dl class="p-profile__skills-list">
-                    <?php foreach ($skill_categories as $field_name => $label) :
+                    <?php foreach ($skill_categories as $field_name => $label):
+
                         $value = get_field($field_name);
-                        if (!$value) continue;
+                        if (!$value) {
+                            continue;
+                        }
                         $items = array_map('trim', explode(',', $value));
-                    ?>
+                        ?>
                     <div class="p-profile__skills-row">
                         <dt class="p-profile__skills-category"><?php echo esc_html($label); ?></dt>
                         <dd class="p-profile__skills-tags">
-                            <?php foreach ($items as $item) : ?>
-                                <span class="p-profile__skills-item"><?php echo esc_html($item); ?></span>
+                            <?php foreach ($items as $item): ?>
+                                <span class="p-profile__skills-item"><?php echo esc_html(
+                                    $item,
+                                ); ?></span>
                             <?php endforeach; ?>
                         </dd>
                     </div>
-                    <?php endforeach; ?>
+                    <?php
+                    endforeach; ?>
                 </dl>
             </div>
             <?php endif; ?>

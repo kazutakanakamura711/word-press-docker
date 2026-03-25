@@ -9,7 +9,9 @@
         <h2 class="p-home-profile__heading c-section-heading">Profile</h2>
         <div class="p-home-profile__avatar">
             <img
-                src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/img-profile.webp'); ?>"
+                src="<?php echo esc_url(
+                    get_template_directory_uri() . '/assets/images/img-profile.webp',
+                ); ?>"
                 alt="KAZUTAKA NAKAMURA"
                 loading="lazy"
             >

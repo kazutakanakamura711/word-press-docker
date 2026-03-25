@@ -16,12 +16,12 @@ the_post();
             <p class="p-contact__lead">お気軽にお問い合わせください。</p>
             <div class="p-contact__form">
                 <?php
-                $cf7 = get_posts(array(
-                    'post_type'      => 'wpcf7_contact_form',
+                $cf7 = get_posts([
+                    'post_type' => 'wpcf7_contact_form',
                     'posts_per_page' => 1,
-                    'orderby'        => 'date',
-                    'order'          => 'ASC',
-                ));
+                    'orderby' => 'date',
+                    'order' => 'ASC',
+                ]);
                 echo $cf7
                     ? do_shortcode('[contact-form-7 id="' . esc_attr($cf7[0]->ID) . '"]')
                     : '<p>現在フォームを準備中です。</p>';
