@@ -21,6 +21,7 @@
     </div>
 </header>
 <nav class="l-header__nav">
+    <button class="l-header__nav-close" aria-label="メニューを閉じる">&times;</button>
     <?php wp_nav_menu([
         'theme_location' => 'header-menu',
         'menu_class' => 'l-header__nav-list',
