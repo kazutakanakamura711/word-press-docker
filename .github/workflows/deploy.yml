@@ -1,0 +1,60 @@
+name: Deploy to Lolipop
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. コードをチェックアウト ──────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Node.js セットアップ ────────────────────────────────────────
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+          cache-dependency-path: src/wp-content/themes/my-theme/package-lock.json
+
+      # ── 3. 依存パッケージのインストール ───────────────────────────────
+      - name: Install npm dependencies
+        working-directory: src/wp-content/themes/my-theme
+        run: npm ci
+
+      # ── 4. テーマのアセットをビルド（Vite）───────────────────────────
+      - name: Build theme assets
+        working-directory: src/wp-content/themes/my-theme
+        run: npm run build
+
+      # ── 5. FTPデプロイ ─────────────────────────────────────────────────
+      - name: Deploy theme via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftps
+          local-dir: src/wp-content/themes/my-theme/
+          server-dir: ${{ secrets.FTP_REMOTE_DIR }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/src/**
+            .husky/
+            .prettierrc
+            .prettierignore
+            eslint.config.js
+            vite.config.js
+            tsconfig.json
+            package.json
+            package-lock.json
+            .DS_Store
+            .ftp-deploy-sync-state.json

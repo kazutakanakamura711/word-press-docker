@@ -130,7 +130,49 @@ word-press-docker/
 
 ---
 
-## オリジナルテーマの本番反映手順（テーマのみアップロード）
+## CI/CD（GitHub Actions による自動デプロイ）
+
+`main` ブランチへの push をトリガーに、GitHub Actions が自動でビルド＆ロリポップへデプロイします。
+
+### デプロイの流れ
+
+```
+main ブランチへ push
+  └→ GitHub Actions 起動
+       ├─ npm ci（依存パッケージインストール）
+       ├─ npm run build（Vite でアセットビルド）
+       └─ FTPS で my-theme/ をロリポップへ転送
+```
+
+### 初回セットアップ
+
+#### 1. ロリポップ側で FTP 情報を確認する
+
+ロリポップの管理画面 → 「サーバーの管理・設定」→「FTP 情報」からホスト名・ユーザー名・パスワードを確認してください。
+
+#### 2. GitHub Secrets を設定する
+
+リポジトリの「Settings」→「Secrets and variables」→「Actions」に以下を登録します。
+
+| Secret 名        | 値の例                                           | 説明                                              |
+| ---------------- | ------------------------------------------------ | ------------------------------------------------- |
+| `FTP_SERVER`     | `ftp.lolipop.jp`                                 | FTP サーバーのホスト名                            |
+| `FTP_USERNAME`   | `your-username`                                  | FTP ユーザー名                                    |
+| `FTP_PASSWORD`   | `your-password`                                  | FTP パスワード                                    |
+| `FTP_REMOTE_DIR` | `/your-account/html/wp-content/themes/my-theme/` | アップロード先のサーバーパス（末尾に `/` が必要） |
+
+> `FTP_REMOTE_DIR` はロリポップ管理画面の「ホームディレクトリ」を基準に設定してください。  
+> 例: `/your-account/html/wp-content/themes/my-theme/`
+
+#### 3. 動作確認
+
+`main` ブランチへ push すると、GitHub の「Actions」タブでワークフローの実行状況を確認できます。
+
+---
+
+## オリジナルテーマの本番反映手順（手動アップロード）
+
+> CI/CD を設定済みの場合、この手順は不要です。`main` ブランチへの push で自動デプロイされます。
 
 ### 前提
 
