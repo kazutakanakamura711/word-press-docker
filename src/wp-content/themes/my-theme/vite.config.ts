@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // src/images/ → assets/images/ へコピーするカスタムプラグイン
-function copyImagesPlugin() {
+function copyImagesPlugin(): Plugin {
   return {
     name: "copy-images",
     closeBundle() {

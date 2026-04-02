@@ -7,5 +7,5 @@
     "lib": ["ES2017", "DOM"],
     "noEmit": true
   },
-  "include": ["src/ts/**/*.ts"]
+  "include": ["src/ts/**/*.ts", "vite.config.ts"]
 }
