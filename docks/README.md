@@ -23,10 +23,21 @@ docker compose down
 
 起動後、以下の URL でアクセスできます。
 
-| 画面     | URL                            |
-| -------- | ------------------------------ |
-| サイト   | http://localhost:8080          |
-| 管理画面 | http://localhost:8080/wp-admin |
+| 画面                  | URL                            |
+| --------------------- | ------------------------------ |
+| サイト                | http://localhost:8080          |
+| 管理画面              | http://localhost:8080/wp-admin |
+| MailHog（メール確認） | http://localhost:8025          |
+
+---
+
+## MailHog（ローカルメール確認ツール）
+
+ローカル環境ではメールを実際に送信せず、MailHog で受信内容を確認できます。
+
+- CF7 などのフォームで「送信」すると http://localhost:8025 の受信ボックスに届きます
+- `src/wp-content/mu-plugins/local-smtp.php` が SMTP を MailHog に向けています
+- このファイルは `WP_ENVIRONMENT_TYPE=local` の環境のみで動作し、本番には git / デプロイ除外されています
 
 ---
 
@@ -60,6 +71,22 @@ make dev  # Docker起動 + SCSS監視を一括実行
 
 ---
 
+## medical-theme の開発コマンド
+
+`medical-theme/` は Vite + Tailwind CSS v4 を使用しています。
+
+```bash
+cd src/wp-content/themes/medical-theme
+
+npm install       # 初回のみ
+npm run dev       # 開発サーバー起動（ウォッチモード）
+npm run build     # 本番用ビルド（assets/ に出力）
+```
+
+> ビルド後の `assets/css/style.css` と `assets/js/main.js` がWordPressで読み込まれます。
+
+---
+
 ## コード品質（ESLint / Prettier / Husky）
 
 `my-theme/` ディレクトリ内で以下のコマンドを使用します。
@@ -82,10 +109,10 @@ npm run format      # 全ファイル整形
 
 ### 各ツールの役割
 
-**ESLint**  
+**ESLint**
 TypeScript（`src/ts/`）の構文エラーやコード品質をチェックします。設定ファイル: `eslint.config.js`
 
-**Prettier**  
+**Prettier**
 TS / SCSS / PHP のコードスタイルを統一します。設定ファイル: `.prettierrc`
 
 | 対象 | インデント | クォート |
@@ -94,7 +121,7 @@ TS / SCSS / PHP のコードスタイルを統一します。設定ファイル:
 | SCSS | 2スペース  | ダブル   |
 | PHP  | 4スペース  | シングル |
 
-**Husky + lint-staged**  
+**Husky + lint-staged**
 `git commit` 時にステージングされたファイルに対して自動で Lint / Prettier を実行します。問題があればコミットがブロックされます。
 
 ```
@@ -104,7 +131,7 @@ TS / SCSS / PHP のコードスタイルを統一します。設定ファイル:
   *.php  → Prettier
 ```
 
-> `npm install` 実行時に `prepare` スクリプトで Git の hooksPath が自動設定されます。  
+> `npm install` 実行時に `prepare` スクリプトで Git の hooksPath が自動設定されます。
 > 別マシンで clone した場合も `make install` を実行すれば有効になります。
 
 ---
@@ -117,6 +144,10 @@ word-press-docker/
 │   ├── wp-admin/
 │   ├── wp-content/
 │   │   ├── themes/             ← オリジナルテーマはここに作成
+│   │   │   ├── my-theme/
+│   │   │   └── medical-theme/
+│   │   ├── mu-plugins/         ← 必須プラグイン（Git・デプロイ管理外）
+│   │   │   └── local-smtp.php  ← MailHog SMTP設定（ローカルのみ有効）
 │   │   └── plugins/
 │   ├── wp-includes/
 │   └── wp-config.php
@@ -136,13 +167,27 @@ word-press-docker/
 
 ### デプロイの流れ
 
+**my-theme**（`src/wp-content/themes/my-theme/**` に変更があった場合）
+
 ```
 main ブランチへ push
-  └→ GitHub Actions 起動
-       ├─ npm ci（依存パッケージインストール）
-       ├─ npm run build（Vite でアセットビルド）
+  └→ deploy.yml 起動
+       ├─ npm ci
+       ├─ npm run build
        └─ FTPS で my-theme/ をロリポップへ転送
 ```
+
+**medical-theme**（`src/wp-content/themes/medical-theme/**` に変更があった場合）
+
+```
+main ブランチへ push
+  └→ deploy-medical-theme.yml 起動
+       ├─ npm ci
+       ├─ npm run build（Vite + Tailwind CSS v4）
+       └─ FTPS で medical-theme/ をロリポップへ転送
+```
+
+> `mu-plugins/` はどちらのワークフローでもデプロイ除外されます。
 
 ### 初回セットアップ
 
@@ -154,14 +199,15 @@ main ブランチへ push
 
 リポジトリの「Settings」→「Secrets and variables」→「Actions」に以下を登録します。
 
-| Secret 名        | 値の例                                           | 説明                                              |
-| ---------------- | ------------------------------------------------ | ------------------------------------------------- |
-| `FTP_SERVER`     | `ftp.lolipop.jp`                                 | FTP サーバーのホスト名                            |
-| `FTP_USERNAME`   | `your-username`                                  | FTP ユーザー名                                    |
-| `FTP_PASSWORD`   | `your-password`                                  | FTP パスワード                                    |
-| `FTP_REMOTE_DIR` | `/your-account/html/wp-content/themes/my-theme/` | アップロード先のサーバーパス（末尾に `/` が必要） |
+| Secret 名                | 値の例                                                | 説明                                                |
+| ------------------------ | ----------------------------------------------------- | --------------------------------------------------- |
+| `FTP_SERVER`             | `ftp.lolipop.jp`                                      | FTP サーバーのホスト名                              |
+| `FTP_USERNAME`           | `your-username`                                       | FTP ユーザー名                                      |
+| `FTP_PASSWORD`           | `your-password`                                       | FTP パスワード                                      |
+| `FTP_REMOTE_DIR`         | `/your-account/html/wp-content/themes/my-theme/`      | my-theme のアップロード先（末尾に `/` が必要）      |
+| `FTP_REMOTE_DIR_MEDICAL` | `/your-account/html/wp-content/themes/medical-theme/` | medical-theme のアップロード先（末尾に `/` が必要） |
 
-> `FTP_REMOTE_DIR` はロリポップ管理画面の「ホームディレクトリ」を基準に設定してください。  
+> `FTP_REMOTE_DIR` はロリポップ管理画面の「ホームディレクトリ」を基準に設定してください。
 > 例: `/your-account/html/wp-content/themes/my-theme/`
 
 #### 3. 動作確認
@@ -228,6 +274,113 @@ public_html/wp-content/themes/my-theme/
 
 ---
 
+## Docker コンテナ操作
+
+### コンテナの状態確認
+
+```bash
+# 起動中のコンテナ一覧を表示
+docker ps
+```
+
+実行中であれば `wordpress_app`（WordPress）と `wordpress_db`（MySQL）が表示されます。
+
+### コンテナの中に入る
+
+```bash
+# WordPress コンテナ（PHP/Apache）に入る
+docker exec -it wordpress_app bash
+
+# MySQL コンテナに入る
+docker exec -it wordpress_db bash
+```
+
+コンテナ内から抜けるときは `exit` と入力します。
+
+### コンテナ内でコマンドを1回だけ実行する
+
+コンテナに入らず、外から直接コマンドを実行する方法です。
+
+```bash
+docker exec wordpress_app bash -c "実行したいコマンド"
+```
+
+---
+
+## WP-CLI（WordPress コマンドラインツール）
+
+WP-CLI を使うと、管理画面を開かずにターミナルからWordPressを操作できます。
+
+> WP-CLI は `Dockerfile` に記述済みのため、コンテナ再作成後も使えます。
+
+### 基本の使い方
+
+```bash
+docker exec wordpress_app bash -c "cd /var/www/html && wp <コマンド> --allow-root"
+```
+
+以下、すべてのコマンドは `docker exec wordpress_app bash -c "cd /var/www/html && ... --allow-root"` の形式で実行します。
+
+### よく使うコマンド一覧
+
+#### 固定ページ
+
+```bash
+# 固定ページの一覧を表示（ID・タイトル・URLが確認できる）
+wp post list --post_type=page --fields=ID,post_title,post_status
+
+# 固定ページをゴミ箱に移動
+wp post delete <ID>
+
+# 固定ページを完全削除（ゴミ箱を経由せず）
+wp post delete <ID> --force
+```
+
+#### メニュー
+
+```bash
+# メニューの一覧を表示
+wp menu list
+
+# メニューに登録されている項目を表示（<メニュー名> は menu list で確認）
+wp menu item list <メニュー名>
+
+# メニュー項目を削除（<db-id> は item list の db_id 列の値）
+wp menu item delete <db-id>
+```
+
+#### パーマリンク
+
+```bash
+# パーマリンクのキャッシュをリセット（設定変更後に実行）
+wp rewrite flush
+```
+
+#### オプション設定
+
+```bash
+# フロントページの表示設定を確認（posts = 最新の投稿 / page = 固定ページ）
+wp option get show_on_front
+
+# フロントページに設定されている固定ページのIDを確認
+wp option get page_on_front
+```
+
+### 使用例：メニュー項目「ホーム」を削除する
+
+```bash
+# 1. メニュー一覧を確認
+docker exec wordpress_app bash -c "cd /var/www/html && wp menu list --allow-root"
+
+# 2. メニュー項目の一覧を確認（例: メニュー名が medical-menu の場合）
+docker exec wordpress_app bash -c "cd /var/www/html && wp menu item list medical-menu --allow-root"
+
+# 3. 削除したい項目の db_id を確認して削除
+docker exec wordpress_app bash -c "cd /var/www/html && wp menu item delete 118 --allow-root"
+```
+
+---
+
 ## Git 管理方針
 
 **自作テーマのみを Git 管理し、WordPress 本体は管理しない。**
@@ -240,26 +393,28 @@ src/wp-content/themes/my-theme/   ← 自分で書いたコードのみ
 
 ### WordPress 本体を Git 管理しない理由
 
-**① ファイル数が膨大**  
+**① ファイル数が膨大**
 WP 本体は数千ファイルあります。自分で編集しないファイルを Git で管理しても意味がありません。
 
-**② アップデートで上書きされる**  
+**② アップデートで上書きされる**
 WP 本体はバージョンアップで中身が変わります。Git 管理していると差分が大量に出て混乱します。
 
-**③ 本番環境への反映方法が変わる**  
+**③ 本番環境への反映方法が変わる**
 自分が書いたコード（テーマ）だけを Git 管理して、WP 本体は本番サーバーに直接インストールするのが一般的な運用です。
 
 ### .gitignore の構成
 
-| 対象                                | 方針                                                 |
-| ----------------------------------- | ---------------------------------------------------- |
-| `.env`                              | Git 管理外（認証情報のため）                         |
-| `src/wp-admin/`, `src/wp-includes/` | Git 管理外（WP 本体）                                |
-| `src/wp-*.php`, `src/index.php` 等  | Git 管理外（WP 本体）                                |
-| `src/wp-content/uploads/`           | Git 管理外（メディアファイル）                       |
-| `src/wp-content/plugins/`           | Git 管理外（公式プラグインは本番で直接インストール） |
-| `src/wp-content/cache/`             | Git 管理外（自動生成ファイル）                       |
-| `src/wp-content/themes/my-theme/`   | **Git 管理対象**（自作テーマ）                       |
+| 対象                                   | 方針                                                 |
+| -------------------------------------- | ---------------------------------------------------- |
+| `.env`                                 | Git 管理外（認証情報のため）                         |
+| `src/wp-admin/`, `src/wp-includes/`    | Git 管理外（WP 本体）                                |
+| `src/wp-*.php`, `src/index.php` 等     | Git 管理外（WP 本体）                                |
+| `src/wp-content/uploads/`              | Git 管理外（メディアファイル）                       |
+| `src/wp-content/plugins/`              | Git 管理外（公式プラグインは本番で直接インストール） |
+| `src/wp-content/cache/`                | Git 管理外（自動生成ファイル）                       |
+| `src/wp-content/mu-plugins/`           | Git 管理外（ローカル専用設定のため）                 |
+| `src/wp-content/themes/my-theme/`      | **Git 管理対象**（自作テーマ）                       |
+| `src/wp-content/themes/medical-theme/` | **Git 管理対象**（自作テーマ）                       |
 
 ---
 

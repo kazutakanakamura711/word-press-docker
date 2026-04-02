@@ -19,15 +19,22 @@ src/wp-content/plugins/
 src/wp-content/cache/
 src/wp-content/upgrade/
 
+# ローカル開発用 mu-plugins（本番デプロイ不要）
+src/wp-content/mu-plugins/
+
 # デフォルトテーマ
 src/wp-content/themes/twentytwenty*/
 src/wp-content/themes/index.php
 
 # 自作テーマは管理する（除外しない）
 !src/wp-content/themes/my-theme/
+!src/wp-content/themes/medical-theme/
 
-# node_modules
-src/wp-content/themes/my-theme/node_modules/
+# node_modules（全テーマ共通）
+src/wp-content/themes/*/node_modules/
 
-# Viteビルド後のCSS（npm run build/watchで生成されるファイル）
-src/wp-content/themes/my-theme/assets/
+# Viteビルド後のアセット（全テーマ共通）
+src/wp-content/themes/*/assets/
+
+# ビルド状態キャッシュ
+src/wp-content/themes/*/.ftp-deploy-sync-state.json

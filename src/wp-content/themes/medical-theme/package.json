@@ -1,0 +1,29 @@
+{
+  "name": "medical-theme",
+  "version": "1.0.0",
+  "description": "医療系クリニック向けWordPressテーマ",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "watch": "vite build --watch",
+    "lint": "eslint src/ts",
+    "lint:fix": "eslint src/ts --fix",
+    "format": "prettier --write src/ts src/css \"**/*.php\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@prettier/plugin-php": "^0.24.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "eslint": "^10.1.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.1",
+    "tailwindcss": "^4.0.0",
+    "typescript-eslint": "^8.57.2",
+    "vite": "^6.0.0"
+  }
+}
