@@ -1,5 +1,25 @@
 import { defineConfig } from "vite";
 import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// src/images/ → assets/images/ へコピーするカスタムプラグイン
+function copyImagesPlugin() {
+  return {
+    name: "copy-images",
+    closeBundle() {
+      const src = path.resolve(__dirname, "src/images");
+      const dest = path.resolve(__dirname, "assets/images");
+      if (!fs.existsSync(src)) return;
+      fs.mkdirSync(dest, { recursive: true });
+      for (const file of fs.readdirSync(src)) {
+        fs.copyFileSync(path.join(src, file), path.join(dest, file));
+      }
+    },
+  };
+}
 
 export default defineConfig({
   // ルートをmy-themeに設定
@@ -32,4 +52,6 @@ export default defineConfig({
       },
     },
   },
+
+  plugins: [copyImagesPlugin()],
 });
