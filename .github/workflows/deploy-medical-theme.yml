@@ -1,9 +1,11 @@
-name: Deploy to Lolipop
+name: Deploy Medical Theme to Lolipop
 
 on:
   push:
     branches:
       - main
+    paths:
+      - "src/wp-content/themes/medical-theme/**"
 
 jobs:
   deploy:
@@ -20,16 +22,16 @@ jobs:
         with:
           node-version: "24"
           cache: "npm"
-          cache-dependency-path: src/wp-content/themes/my-theme/package-lock.json
+          cache-dependency-path: src/wp-content/themes/medical-theme/package-lock.json
 
       # ── 3. 依存パッケージのインストール ───────────────────────────────
       - name: Install npm dependencies
-        working-directory: src/wp-content/themes/my-theme
+        working-directory: src/wp-content/themes/medical-theme
         run: npm ci
 
-      # ── 4. テーマのアセットをビルド（Vite）───────────────────────────
+      # ── 4. テーマのアセットをビルド（Vite + Tailwind CSS）────────────
       - name: Build theme assets
-        working-directory: src/wp-content/themes/my-theme
+        working-directory: src/wp-content/themes/medical-theme
         run: npm run build
 
       # ── 5. FTPデプロイ ─────────────────────────────────────────────────
@@ -41,15 +43,14 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
           protocol: ftps
-          local-dir: src/wp-content/themes/my-theme/
-          server-dir: ${{ secrets.FTP_REMOTE_DIR_PORTFOLIO }}
+          local-dir: src/wp-content/themes/medical-theme/
+          server-dir: ${{ secrets.FTP_REMOTE_DIR_MEDICAL }}
           exclude: |
             **/.git*
             **/.git*/**
             **/node_modules/**
             **/src/**
             **/mu-plugins/**
-            .husky/**
             .prettierrc
             .prettierignore
             eslint.config.js
