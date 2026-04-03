@@ -43,11 +43,17 @@ the_post();
                 'skill_other' => 'その他',
             ];
 
+            // get_field() はACF（Advanced Custom Fields）プラグインの関数。
+            // WordPressを入れ直した際などACFが未インストール・未有効化の場合は関数が存在せず
+            // 500エラーになるため、function_exists() で存在確認してから呼び出す。
+            // 管理画面のプラグインからACFをインストール・有効化すればスキルフィールドが使用可能になる。
             $has_skills = false;
-            foreach ($skill_categories as $field_name => $label) {
-                if (get_field($field_name)) {
-                    $has_skills = true;
-                    break;
+            if (function_exists('get_field')) {
+                foreach ($skill_categories as $field_name => $label) {
+                    if (get_field($field_name)) {
+                        $has_skills = true;
+                        break;
+                    }
                 }
             }
             ?>
@@ -57,7 +63,7 @@ the_post();
                 <dl class="p-profile__skills-list">
                     <?php foreach ($skill_categories as $field_name => $label):
 
-                        $value = get_field($field_name);
+                        $value = function_exists('get_field') ? get_field($field_name) : null;
                         if (!$value) {
                             continue;
                         }
