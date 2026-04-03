@@ -20,7 +20,10 @@
                 <!-- 院長写真 -->
                 <div class="md:col-span-1">
                     <?php
-                    $director_image_url = get_field('院長写真') ?: '';
+                    // get_field() はACF（Advanced Custom Fields）プラグインの関数。
+                    // ACFが未インストール・未有効化の場合は500エラーになるため function_exists() で確認する。
+                    $director_image_url = function_exists('get_field') ? get_field('院長写真') : '';
+                    $director_image_url = $director_image_url ?: '';
                     ?>
                     <?php if ( $director_image_url ): ?>
                         <img src="<?php echo esc_url( $director_image_url ); ?>" alt="院長写真" class="rounded-2xl w-full object-cover aspect-square">
