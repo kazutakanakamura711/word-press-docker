@@ -1,8 +1,13 @@
 <?php get_header(); ?>
 <main>
     <!-- ページヘッダー -->
-    <div class="bg-teal-700 text-white py-16">
-        <div class="max-w-6xl mx-auto px-4 text-center">
+    <?php $header_img_url = function_exists( 'get_field' ) ? get_field( 'page_header_image' ) : ''; ?>
+    <div class="relative bg-teal-700 text-white py-16<?php echo $header_img_url ? ' bg-blend-overlay bg-cover bg-center' : ''; ?>"
+        <?php if ( $header_img_url ): ?>style="background-image: url('<?php echo esc_url( $header_img_url ); ?>')"<?php endif; ?>>
+        <?php if ( $header_img_url ): ?>
+            <div class="absolute inset-0 bg-teal-900/60"></div>
+        <?php endif; ?>
+        <div class="relative z-10 max-w-6xl mx-auto px-4 text-center">
             <h1 class="text-4xl font-bold mb-3">医院について</h1>
             <p class="text-teal-200">院長挨拶・クリニックの理念</p>
         </div>
@@ -17,26 +22,31 @@
                 院長挨拶
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-10 items-start">
-                <!-- 院長写真 -->
+                <!-- 院長画像 -->
                 <div class="md:col-span-1">
                     <?php
-                    // get_field() はACF（Advanced Custom Fields）プラグインの関数。
-                    // ACFが未インストール・未有効化の場合は500エラーになるため function_exists() で確認する。
-                    $director_image_url = function_exists('get_field') ? get_field('院長写真') : '';
+                    $director_image_url = function_exists( 'get_field' ) ? get_field( '院長画像' ) : '';
                     $director_image_url = $director_image_url ?: '';
                     ?>
                     <?php if ( $director_image_url ): ?>
-                        <img src="<?php echo esc_url( $director_image_url ); ?>" alt="院長写真" class="rounded-2xl w-full object-cover aspect-square">
+                        <img src="<?php echo esc_url( $director_image_url ); ?>" alt="院長画像" class="rounded-2xl w-full object-cover aspect-square">
                     <?php else: ?>
-                        <div class="bg-gray-100 rounded-2xl aspect-square flex items-center justify-center text-gray-400 text-sm">院長写真</div>
+                        <div class="bg-gray-100 rounded-2xl aspect-square flex items-center justify-center text-gray-400 text-sm">院長画像</div>
                     <?php endif; ?>
                     <div class="mt-4 text-center">
-                        <p class="font-bold text-gray-900 text-lg">院長 氏名</p>
-                        <p class="text-gray-500 text-sm mt-1">専門科目</p>
+                        <?php $director_name = function_exists( 'get_field' ) ? get_field( 'director_name' ) : ''; ?>
+                        <p class="font-bold text-gray-900 text-lg"><?php echo esc_html( $director_name ?: '院長 氏名' ); ?></p>
+                        <?php $director_specialty = function_exists( 'get_field' ) ? get_field( 'director_specialty' ) : ''; ?>
+                        <p class="text-gray-500 text-sm mt-1"><?php echo esc_html( $director_specialty ?: '専門科目' ); ?></p>
                     </div>
                 </div>
                 <!-- 挨拶文 -->
                 <div class="md:col-span-2 space-y-4 text-gray-700 leading-relaxed">
+                    <?php
+                    $director_message = function_exists( 'get_field' ) ? get_field( 'director_message' ) : '';
+                    if ( $director_message ) :
+                        echo wpautop( esc_html( $director_message ) );
+                    else: ?>
                     <p>
                         このたびは当クリニックのホームページをご覧いただき、誠にありがとうございます。
                     </p>
@@ -49,8 +59,9 @@
                         スタッフ一同、日々努力してまいります。
                         どうぞお気軽にご相談ください。
                     </p>
+                    <?php endif; ?>
                     <p class="text-right font-medium text-gray-900">
-                        院長 氏名
+                        <?php echo esc_html( $director_name ?: '院長 氏名' ); ?>
                     </p>
                 </div>
             </div>
@@ -101,6 +112,15 @@
             </div>
         </section>
 
+        <!-- 診療時間 -->
+        <section>
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-3">
+                <span class="w-1.5 h-8 bg-teal-500 rounded-full inline-block"></span>
+                診療時間
+            </h2>
+            <?php render_business_hours_table(); ?>
+        </section>
+
         <!-- クリニック概要 -->
         <section>
             <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-3">
@@ -110,24 +130,21 @@
             <table class="w-full border-collapse text-sm">
                 <tbody class="divide-y divide-gray-100">
                     <?php
-                    $info = [
-                        ['クリニック名', get_bloginfo('name')],
-                        ['所在地', '〒000-0000　都道府県市区町村 番地'],
-                        ['電話番号', '000-000-0000'],
-                        ['診療科目', '内科・小児科・整形外科 など'],
-                        ['診療時間', '月〜金 9:00〜18:00 / 土 9:00〜13:00'],
-                        ['休診日', '日曜・祝日'],
-                        ['最寄り駅', '○○線「○○駅」徒歩5分'],
+                    $address = function_exists( 'get_field' ) ? get_field( 'clinic_address' ) : '';
+                    $phone   = function_exists( 'get_field' ) ? get_field( 'clinic_phone' ) : '';
+                    $station = function_exists( 'get_field' ) ? get_field( 'clinic_nearest_station' ) : '';
+                    $info    = [
+                        [ 'クリニック名', get_bloginfo( 'name' ) ],
+                        [ '所在地',       $address ?: '〒000-0000　都道府県市区町村 番地' ],
+                        [ '電話番号',     $phone   ?: '000-000-0000' ],
+                        [ '最寄り駅',     $station ?: '○○線「○○駅」徒歩5分' ],
                     ];
-                    foreach ($info as [$label, $value]): ?>
+                    foreach ( $info as [ $label, $value ] ): ?>
                         <tr class="even:bg-gray-50">
-                            <th class="text-left py-4 px-4 font-semibold text-teal-700 w-40"><?php echo esc_html(
-                                $label,
-                            ); ?></th>
-                            <td class="py-4 px-4 text-gray-700"><?php echo esc_html($value); ?></td>
+                            <th class="text-left py-4 px-4 font-semibold text-teal-700 w-40"><?php echo esc_html( $label ); ?></th>
+                            <td class="py-4 px-4 text-gray-700"><?php echo esc_html( $value ); ?></td>
                         </tr>
-                    <?php endforeach;
-                    ?>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </section>

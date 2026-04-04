@@ -1,14 +1,26 @@
 <?php get_header(); ?>
 <main>
     <!-- ページヘッダー -->
-    <div class="bg-teal-700 text-white py-16">
-        <div class="max-w-6xl mx-auto px-4 text-center">
+    <?php $header_img_url = function_exists( 'get_field' ) ? get_field( 'page_header_image' ) : ''; ?>
+    <div class="relative bg-teal-700 text-white py-16<?php echo $header_img_url ? ' bg-blend-overlay bg-cover bg-center' : ''; ?>"
+        <?php if ( $header_img_url ): ?>style="background-image: url('<?php echo esc_url( $header_img_url ); ?>')"<?php endif; ?>>
+        <?php if ( $header_img_url ): ?>
+            <div class="absolute inset-0 bg-teal-900/60"></div>
+        <?php endif; ?>
+        <div class="relative z-10 max-w-6xl mx-auto px-4 text-center">
             <h1 class="text-4xl font-bold mb-3">アクセス</h1>
             <p class="text-teal-200">クリニックへのアクセス方法をご確認ください</p>
         </div>
     </div>
 
     <div class="max-w-4xl mx-auto px-4 py-16">
+        <?php
+        // 「医院について」ページをSSOTとして基本情報・診療時間を参照する
+        $about_id = get_page_id_by_slug( 'about' );
+        $address  = ( $about_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_address', $about_id ) : '';
+        $phone    = ( $about_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_phone', $about_id ) : '';
+        $station  = ( $about_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_nearest_station', $about_id ) : '';
+        ?>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
             <!-- 基本情報 -->
             <div>
@@ -20,15 +32,18 @@
                     </div>
                     <div class="flex gap-4">
                         <dt class="w-24 font-semibold text-teal-700 flex-shrink-0">住所</dt>
-                        <dd>〒000-0000<br>都道府県市区町村 番地</dd>
+                        <dd><?php echo esc_html( $address ?: '〒000-0000 都道府県市区町村 番地' ); ?></dd>
                     </div>
                     <div class="flex gap-4">
                         <dt class="w-24 font-semibold text-teal-700 flex-shrink-0">電話</dt>
-                        <dd><a href="tel:000-000-0000" class="text-teal-700 hover:underline">000-000-0000</a></dd>
+                        <dd>
+                            <?php $phone_display = $phone ?: '000-000-0000'; ?>
+                            <a href="tel:<?php echo esc_attr( preg_replace( '/[^0-9]/', '', $phone_display ) ); ?>" class="text-teal-700 hover:underline"><?php echo esc_html( $phone_display ); ?></a>
+                        </dd>
                     </div>
                     <div class="flex gap-4">
                         <dt class="w-24 font-semibold text-teal-700 flex-shrink-0">最寄り駅</dt>
-                        <dd>○○線「○○駅」徒歩5分</dd>
+                        <dd><?php echo esc_html( $station ?: '○○線「○○駅」徒歩5分' ); ?></dd>
                     </div>
                 </dl>
             </div>
@@ -36,45 +51,7 @@
             <!-- 診療時間 -->
             <div>
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">診療時間</h2>
-                <table class="w-full border-collapse text-sm">
-                    <thead>
-                        <tr class="bg-teal-700 text-white">
-                            <th class="py-2 px-3 text-left rounded-tl-lg">曜日</th>
-                            <th class="py-2 px-3 text-center">午前</th>
-                            <th class="py-2 px-3 text-center rounded-tr-lg">午後</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        <?php
-                        $hours = [
-                            ['月', '9:00〜12:30', '14:00〜18:00'],
-                            ['火', '9:00〜12:30', '14:00〜18:00'],
-                            ['水', '9:00〜12:30', '–'],
-                            ['木', '9:00〜12:30', '14:00〜18:00'],
-                            ['金', '9:00〜12:30', '14:00〜18:00'],
-                            ['土', '9:00〜13:00', '–'],
-                        ];
-                        foreach ($hours as [$day, $am, $pm]): ?>
-                        <tr class="even:bg-gray-50">
-                            <td class="py-2 px-3 font-medium text-gray-700"><?php echo esc_html(
-                                $day,
-                            ); ?></td>
-                            <td class="py-2 px-3 text-center text-teal-700"><?php echo esc_html(
-                                $am,
-                            ); ?></td>
-                            <td class="py-2 px-3 text-center <?php echo $pm === '–'
-                                ? 'text-gray-400'
-                                : 'text-teal-700'; ?>"><?php echo esc_html($pm); ?></td>
-                        </tr>
-                        <?php endforeach;
-                        ?>
-                        <tr class="bg-red-50">
-                            <td class="py-2 px-3 font-medium text-red-400">日・祝</td>
-                            <td class="py-2 px-3 text-center text-red-400">休診</td>
-                            <td class="py-2 px-3 text-center text-red-400">休診</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <?php render_business_hours_table( $about_id ?: null ); ?>
             </div>
         </div>
 

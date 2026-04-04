@@ -5,8 +5,13 @@
 get_header(); ?>
 <main>
     <!-- ページヘッダー -->
-    <div class="bg-teal-700 text-white py-16">
-        <div class="max-w-6xl mx-auto px-4 text-center">
+    <?php $header_img_url = function_exists( 'get_field' ) ? get_field( 'page_header_image' ) : ''; ?>
+    <div class="relative bg-teal-700 text-white py-16<?php echo $header_img_url ? ' bg-blend-overlay bg-cover bg-center' : ''; ?>"
+        <?php if ( $header_img_url ): ?>style="background-image: url('<?php echo esc_url( $header_img_url ); ?>')"<?php endif; ?>>
+        <?php if ( $header_img_url ): ?>
+            <div class="absolute inset-0 bg-teal-900/60"></div>
+        <?php endif; ?>
+        <div class="relative z-10 max-w-6xl mx-auto px-4 text-center">
             <h1 class="text-4xl font-bold mb-3">お問い合わせ</h1>
             <p class="text-teal-200">ご予約・ご質問はこちらからお気軽にどうぞ</p>
         </div>
