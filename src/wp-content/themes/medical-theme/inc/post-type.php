@@ -13,6 +13,7 @@ add_action('init', function () {
     ]);
 
     // Service（診療科目）
+    // page-services.php の診療案内と home-services.php のフォールバックで利用
     register_post_type('service', [
         'label' => '診療案内',
         'public' => true,
@@ -23,14 +24,5 @@ add_action('init', function () {
         'show_in_rest' => true,
     ]);
 
-    // Staff（スタッフ紹介）
-    register_post_type('staff', [
-        'label' => 'スタッフ紹介',
-        'public' => true,
-        'has_archive' => false,
-        'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'page-attributes'],
-        'menu_icon' => 'dashicons-groups',
-        'rewrite' => ['slug' => 'staff'],
-        'show_in_rest' => true,
-    ]);
 });
+

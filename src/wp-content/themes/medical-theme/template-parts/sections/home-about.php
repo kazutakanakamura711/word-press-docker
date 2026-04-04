@@ -10,12 +10,17 @@
             <!-- 画像 -->
             <div class="relative">
                 <div class="bg-teal-50 rounded-2xl overflow-hidden aspect-square">
-                    <img
-                        src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/img-top-about.webp'); ?>"
-                        alt="クリニックについて"
-                        class="w-full h-full object-cover"
-                        loading="lazy"
-                    >
+                    <?php $about_img_url = function_exists( 'get_field' ) ? get_field( 'about_section_image' ) : ''; ?>
+                    <?php if ( $about_img_url ): ?>
+                        <img
+                            src="<?php echo esc_url( $about_img_url ); ?>"
+                            alt="クリニックについて"
+                            class="w-full h-full object-cover"
+                            loading="lazy"
+                        >
+                    <?php else: ?>
+                        <div class="bg-gray-100 rounded-2xl aspect-square flex items-center justify-center text-gray-400 text-sm">クリニック写真</div>
+                    <?php endif; ?>
                 </div>
                 <!-- アクセント -->
                 <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-teal-100 rounded-2xl -z-10"></div>
