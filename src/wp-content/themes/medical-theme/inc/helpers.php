@@ -22,7 +22,7 @@ function get_page_id_by_slug( string $slug ): int {
  * am_start と pm_start が両方空の場合は「休診」と表示する。
  * ACFが未インストールの場合は何も出力しない。
  *
- * @param int|null $post_id 参照するページID（nullの場合は現在のページ）
+ * @param int|null $post_id 参照するページID（nullの場合は「診療時間・アクセス」ページを自動取得）
  * @return void
  */
 function render_business_hours_table( ?int $post_id = null ): void {
@@ -39,6 +39,11 @@ function render_business_hours_table( ?int $post_id = null ): void {
         'sat' => '土',
         'sun' => '日・祝',
     ];
+
+    // post_id未指定の場合は「診療時間・アクセス」ページを自動取得
+    if ( $post_id === null ) {
+        $post_id = get_page_id_by_slug( 'access' ) ?: null;
+    }
 
     // フィールドが1つでも設定されているか確認
     $has_data = false;
