@@ -1,40 +1,27 @@
 <?php
 /**
  * Home - Services セクション
- * 「診療案内」ページのACFフィールド（service_01〜service_05）を参照する。
+ * 「診療案内」ページのACFフィールド（service_01〜service_16）を参照する（SSOT）。
  * ACF未設定の場合はフォールバックデータを表示する。
  */
 
-// 診療案内ページのACFフィールドを参照（SSOT）
 $services_page_id = get_page_id_by_slug( 'services' );
-$acf_services     = [];
+$services_to_show = [];
+
 if ( $services_page_id && function_exists( 'get_field' ) ) {
-    for ( $i = 1; $i <= 6; $i++ ) {
+    for ( $i = 1; $i <= 16; $i++ ) {
         $num   = str_pad( $i, 2, '0', STR_PAD_LEFT );
         $title = get_field( "service_{$num}_title", $services_page_id );
-        $desc  = get_field( "service_{$num}_description", $services_page_id );
-        $icon  = get_field( "service_{$num}_icon", $services_page_id );
         if ( $title ) {
-            $acf_services[] = [
-                'title' => $title,
-                'desc'  => $desc ?: '',
-                'icon'  => $icon ?: '',
-            ];
+            $services_to_show[] = $title;
         }
     }
 }
 
 // フォールバックデータ（ACF未設定時）
-$fallback_services = [
-    [ 'icon' => '🫀', 'title' => '内科',     'desc' => '風邪・発熱・生活習慣病など、一般的な内科疾患に対応いたします。' ],
-    [ 'icon' => '🩺', 'title' => '小児科',   'desc' => 'お子様の成長・発達から感染症まで、お子様の健康をサポートします。' ],
-    [ 'icon' => '🦴', 'title' => '整形外科', 'desc' => '肩・腰・膝の痛みやスポーツ外傷など、運動器全般の治療を行います。' ],
-    [ 'icon' => '🧬', 'title' => '皮膚科',   'desc' => 'アトピー・湿疹・蕁麻疹などの皮膚疾患を専門的に診察します。' ],
-    [ 'icon' => '🔬', 'title' => '心療内科', 'desc' => 'ストレス・不眠・不安障害など、こころとからだの不調に対応します。' ],
-    [ 'icon' => '🏥', 'title' => '健康診断', 'desc' => '各種健康診断・特定健診・人間ドックに対応しています。' ],
-];
-
-$services_to_show = $acf_services ?: $fallback_services;
+if ( empty( $services_to_show ) ) {
+    $services_to_show = [ '内科', '小児科', '整形外科', '皮膚科', '心療内科', '健康診断' ];
+}
 ?>
 <section class="py-24 bg-gray-50">
     <div class="max-w-6xl mx-auto px-4">
@@ -44,18 +31,10 @@ $services_to_show = $acf_services ?: $fallback_services;
             <div class="w-12 h-1 bg-teal-500 mx-auto rounded-full"></div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <?php foreach ( $services_to_show as $service ) : ?>
-                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow border border-gray-100">
-                    <?php if ( ! empty( $service['icon'] ) && filter_var( $service['icon'], FILTER_VALIDATE_URL ) ) : ?>
-                        <div class="w-16 h-16 rounded-xl overflow-hidden mb-5">
-                            <img src="<?php echo esc_url( $service['icon'] ); ?>" alt="" class="w-full h-full object-cover">
-                        </div>
-                    <?php elseif ( ! empty( $service['icon'] ) ) : ?>
-                        <div class="text-4xl mb-5"><?php echo $service['icon']; ?></div>
-                    <?php endif; ?>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3"><?php echo esc_html( $service['title'] ); ?></h3>
-                    <p class="text-gray-500 text-sm leading-relaxed"><?php echo esc_html( $service['desc'] ); ?></p>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <?php foreach ( $services_to_show as $title ) : ?>
+                <div class="bg-white rounded-xl py-5 px-6 text-center shadow-sm border border-gray-100 hover:border-teal-300 hover:shadow-md transition-all">
+                    <p class="font-semibold text-gray-800"><?php echo esc_html( $title ); ?></p>
                 </div>
             <?php endforeach; ?>
         </div>

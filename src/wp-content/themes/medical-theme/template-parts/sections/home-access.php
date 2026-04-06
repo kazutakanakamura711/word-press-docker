@@ -1,8 +1,19 @@
 <?php
 /**
  * Home - Access セクション
- * 診療時間 + アクセス情報
+ * 「医院について」ページのACFをSSOTとして参照する。
+ * 診療時間は render_business_hours_table() で出力する。
  */
+
+$about_id = get_page_id_by_slug( 'about' );
+$address  = ( $about_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_address',          $about_id ) : '';
+$phone    = ( $about_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_phone',             $about_id ) : '';
+$station  = ( $about_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_nearest_station',   $about_id ) : '';
+
+// 診療時間の出力をバッファに取得し、ACFデータ有無を判定する
+ob_start();
+render_business_hours_table( $about_id );
+$hours_output = ob_get_clean();
 ?>
 <section class="py-24 bg-teal-50">
     <div class="max-w-6xl mx-auto px-4">
@@ -18,32 +29,36 @@
                 <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
                     <span class="text-teal-600">🕐</span> 診療時間
                 </h3>
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="border-b-2 border-teal-100">
-                            <th class="text-left py-2 text-gray-500 font-medium">曜日</th>
-                            <th class="text-center py-2 text-gray-500 font-medium">午前</th>
-                            <th class="text-center py-2 text-gray-500 font-medium">午後</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-50">
-                        <?php
-                        $schedule = [
-                            ['月〜金', '9:00〜12:30', '14:00〜18:00'],
-                            ['土', '9:00〜13:00', '–'],
-                            ['日・祝', '休診', '休診'],
-                        ];
-                        foreach ($schedule as [$day, $am, $pm]):
-                            $is_closed = $am === '休診';
-                        ?>
-                        <tr class="<?php echo $is_closed ? 'text-red-400' : 'text-gray-700'; ?>">
-                            <td class="py-3 font-medium"><?php echo esc_html($day); ?></td>
-                            <td class="py-3 text-center"><?php echo esc_html($am); ?></td>
-                            <td class="py-3 text-center <?php echo $pm === '–' ? 'text-gray-300' : ''; ?>"><?php echo esc_html($pm); ?></td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                <?php if ( $hours_output ) : ?>
+                    <?php echo $hours_output; ?>
+                <?php else : ?>
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b-2 border-teal-100">
+                                <th class="text-left py-2 text-gray-500 font-medium">曜日</th>
+                                <th class="text-center py-2 text-gray-500 font-medium">午前</th>
+                                <th class="text-center py-2 text-gray-500 font-medium">午後</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-50">
+                            <tr class="text-gray-700">
+                                <td class="py-3 font-medium">月〜金</td>
+                                <td class="py-3 text-center">9:00〜12:30</td>
+                                <td class="py-3 text-center">14:00〜18:00</td>
+                            </tr>
+                            <tr class="text-gray-700">
+                                <td class="py-3 font-medium">土</td>
+                                <td class="py-3 text-center">9:00〜13:00</td>
+                                <td class="py-3 text-center text-gray-300">–</td>
+                            </tr>
+                            <tr class="text-red-400">
+                                <td class="py-3 font-medium">日・祝</td>
+                                <td class="py-3 text-center">休診</td>
+                                <td class="py-3 text-center">休診</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
                 <p class="text-gray-400 text-xs mt-4">※受付は診療終了30分前まで</p>
             </div>
 
@@ -59,15 +74,18 @@
                     </div>
                     <div>
                         <dt class="font-semibold text-teal-700 mb-1">住所</dt>
-                        <dd class="text-gray-700">〒000-0000<br>都道府県市区町村 番地</dd>
+                        <dd class="text-gray-700"><?php echo nl2br( esc_html( $address ?: '〒000-0000　都道府県市区町村 番地' ) ); ?></dd>
                     </div>
                     <div>
                         <dt class="font-semibold text-teal-700 mb-1">電話番号</dt>
-                        <dd><a href="tel:000-000-0000" class="text-teal-700 hover:underline font-medium">000-000-0000</a></dd>
+                        <dd>
+                            <?php $tel = $phone ?: '000-000-0000'; ?>
+                            <a href="tel:<?php echo esc_attr( $tel ); ?>" class="text-teal-700 hover:underline font-medium"><?php echo esc_html( $tel ); ?></a>
+                        </dd>
                     </div>
                     <div>
                         <dt class="font-semibold text-teal-700 mb-1">アクセス</dt>
-                        <dd class="text-gray-700">○○線「○○駅」徒歩5分</dd>
+                        <dd class="text-gray-700"><?php echo esc_html( $station ?: '○○線「○○駅」徒歩5分' ); ?></dd>
                     </div>
                 </dl>
                 <div class="mt-8">
