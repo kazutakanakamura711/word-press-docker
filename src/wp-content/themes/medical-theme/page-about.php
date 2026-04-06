@@ -128,9 +128,10 @@
             <table class="w-full border-collapse text-sm">
                 <tbody class="divide-y divide-gray-100">
                     <?php
-                    $address = function_exists( 'get_field' ) ? get_field( 'clinic_address' ) : '';
-                    $phone   = function_exists( 'get_field' ) ? get_field( 'clinic_phone' ) : '';
-                    $station = function_exists( 'get_field' ) ? get_field( 'clinic_nearest_station' ) : '';
+                    $clinic_src_id = get_page_id_by_slug( 'access' );
+                    $address = ( $clinic_src_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_address', $clinic_src_id ) : '';
+                    $phone   = ( $clinic_src_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_phone', $clinic_src_id ) : '';
+                    $station = ( $clinic_src_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_nearest_station', $clinic_src_id ) : '';
                     $info    = [
                         [ 'クリニック名', get_bloginfo( 'name' ) ],
                         [ '所在地',       $address ?: '〒000-0000　都道府県市区町村 番地' ],
