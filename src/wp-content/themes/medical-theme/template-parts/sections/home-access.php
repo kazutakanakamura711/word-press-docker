@@ -1,18 +1,18 @@
 <?php
 /**
  * Home - Access セクション
- * 「医院について」ページのACFをSSOTとして参照する。
+ * 「診療時間・アクセス」ページのACFをSSOTとして参照する。
  * 診療時間は render_business_hours_table() で出力する。
  */
 
-$about_id = get_page_id_by_slug( 'about' );
-$address  = ( $about_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_address',          $about_id ) : '';
-$phone    = ( $about_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_phone',             $about_id ) : '';
-$station  = ( $about_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_nearest_station',   $about_id ) : '';
+$access_id = get_page_id_by_slug( 'access' );
+$address   = ( $access_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_address',          $access_id ) : '';
+$phone     = ( $access_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_phone',             $access_id ) : '';
+$station   = ( $access_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_nearest_station',   $access_id ) : '';
 
 // 診療時間の出力をバッファに取得し、ACFデータ有無を判定する
 ob_start();
-render_business_hours_table( $about_id );
+render_business_hours_table( $access_id );
 $hours_output = ob_get_clean();
 ?>
 <section class="py-24 bg-teal-50">
