@@ -64,7 +64,10 @@ acf_add_local_field_group( [
         ],
     ],
     'location' => [
-        [ [ 'param' => 'post_type', 'operator' => '==', 'value' => 'page' ] ],
+        [
+            [ 'param' => 'post_type', 'operator' => '==', 'value' => 'page' ],
+            [ 'param' => 'page_type', 'operator' => '!=', 'value' => 'front_page' ],
+        ],
     ],
     'menu_order' => 0,
     'position'   => 'normal',
@@ -251,7 +254,7 @@ acf_add_local_field_group( [
 //    トップページと page-services.php の両方で参照する
 // ─────────────────────────────────────────────
 $service_fields = [];
-for ( $i = 1; $i <= 6; $i++ ) {
+for ( $i = 1; $i <= 16; $i++ ) {
     $num = str_pad( $i, 2, '0', STR_PAD_LEFT );
     $service_fields[] = [
         'key'   => "field_svc_{$num}_tab",
@@ -276,13 +279,13 @@ for ( $i = 1; $i <= 6; $i++ ) {
         'placeholder' => '例：風邪・発熱・生活習慣病など',
     ];
     $service_fields[] = [
-        'key'           => "field_svc_{$num}_icon",
-        'label'         => 'アイコン画像',
-        'name'          => "service_{$num}_icon",
+        'key'           => "field_svc_{$num}_image",
+        'label'         => '画像',
+        'name'          => "service_{$num}_image",
         'type'          => 'image',
         'return_format' => 'url',
-        'preview_size'  => 'thumbnail',
-        'instructions'  => '未設定の場合は絵文字アイコンが表示されます。',
+        'preview_size'  => 'medium',
+        'instructions'  => '未設定の場合はプレースホルダーが表示されます。',
     ];
 }
 
