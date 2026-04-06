@@ -36,8 +36,6 @@
                     <div class="mt-4 text-center">
                         <?php $director_name = function_exists( 'get_field' ) ? get_field( 'director_name' ) : ''; ?>
                         <p class="font-bold text-gray-900 text-lg"><?php echo esc_html( $director_name ?: '院長 氏名' ); ?></p>
-                        <?php $director_specialty = function_exists( 'get_field' ) ? get_field( 'director_specialty' ) : ''; ?>
-                        <p class="text-gray-500 text-sm mt-1"><?php echo esc_html( $director_specialty ?: '専門科目' ); ?></p>
                     </div>
                 </div>
                 <!-- 挨拶文 -->

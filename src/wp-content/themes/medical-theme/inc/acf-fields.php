@@ -131,13 +131,6 @@ acf_add_local_field_group( [
             'placeholder'  => '例：山田 太郎',
         ],
         [
-            'key'         => 'field_director_specialty',
-            'label'       => '専門科目',
-            'name'        => 'director_specialty',
-            'type'        => 'text',
-            'placeholder' => '例：内科・小児科',
-        ],
-        [
             'key'          => 'field_director_message',
             'label'        => '院長挨拶文',
             'name'         => 'director_message',
@@ -154,12 +147,13 @@ acf_add_local_field_group( [
 ] );
 
 // ─────────────────────────────────────────────
-// 4. クリニック基本情報（「医院について」ページをSSOT）
-//    住所・電話・最寄り駅 — アクセスページ等は get_field($name, $about_id) で参照
+// 4. クリニック基本情報（「診療時間・アクセス」ページをSSOT）
+//    住所・電話・最寄り駅
 // ─────────────────────────────────────────────
 acf_add_local_field_group( [
     'key'    => 'group_clinic_info',
-    'title'  => 'クリニック基本情報（医院についてページのみ入力）',
+    'title'  => 'クリニック基本情報',
+
     'fields' => [
         [
             'key'         => 'field_clinic_address',
@@ -184,14 +178,14 @@ acf_add_local_field_group( [
         ],
     ],
     'location' => [
-        [ [ 'param' => 'page_slug', 'operator' => '==', 'value' => 'about' ] ],
+        [ [ 'param' => 'page_slug', 'operator' => '==', 'value' => 'access' ] ],
     ],
     'menu_order' => 20,
     'position'   => 'normal',
 ] );
 
 // ─────────────────────────────────────────────
-// 5. 診療時間（「医院について」ページをSSOT）
+// 5. 診療時間（「診療時間・アクセス」ページをSSOT）
 //    フィールド名規則: business_hours_[曜日]_[am|pm]_[start|end]
 //    曜日: mon / tue / wed / thu / fri / sat / sun
 //    開始時間を入力した場合は終了時間も必須（acf/validate_save_post で検証）
@@ -242,7 +236,7 @@ acf_add_local_field_group( [
     'title'  => '診療時間（医院についてページのみ入力）',
     'fields' => $hours_fields,
     'location' => [
-        [ [ 'param' => 'page_slug', 'operator' => '==', 'value' => 'about' ] ],
+        [ [ 'param' => 'page_slug', 'operator' => '==', 'value' => 'access' ] ],
     ],
     'menu_order' => 30,
     'position'   => 'normal',

@@ -24,52 +24,47 @@
             <div>
                 <h3 class="font-bold text-sm uppercase tracking-wider mb-4 text-teal-300">Hours</h3>
                 <?php
-                $footer_about_id = get_page_id_by_slug( 'about' );
-                $days_short = [
-                    'mon' => '月〜金', 'tue' => null, 'wed' => null, 'thu' => null, 'fri' => null,
-                    'sat' => '土',
-                    'sun' => '日・祝',
+                $footer_access_id = get_page_id_by_slug( 'access' );
+                $footer_days = [
+                    'mon' => '月', 'tue' => '火', 'wed' => '水', 'thu' => '木',
+                    'fri' => '金', 'sat' => '土', 'sun' => '日・祝',
                 ];
-                $aggregated = []; // 月〜金を1行にまとめる
-                if ( $footer_about_id && function_exists( 'get_field' ) ) {
-                    $weekday_am = get_field( 'business_hours_mon_am_start', $footer_about_id );
-                    $weekday_pm = get_field( 'business_hours_mon_pm_start', $footer_about_id );
-                    $weekday_am_end = get_field( 'business_hours_mon_am_end', $footer_about_id );
-                    $weekday_pm_end = get_field( 'business_hours_mon_pm_end', $footer_about_id );
-                    if ( $weekday_am || $weekday_pm ) {
-                        $am_str = ( $weekday_am && $weekday_am_end ) ? "{$weekday_am}〜{$weekday_am_end}" : '–';
-                        $pm_str = ( $weekday_pm && $weekday_pm_end ) ? "{$weekday_pm}〜{$weekday_pm_end}" : '–';
-                        $aggregated[] = [ 'day' => '月〜金', 'time' => implode( ' / ', array_filter( [ $am_str !== '–' ? $am_str : null, $pm_str !== '–' ? $pm_str : null ] ) ) ?: '–', 'closed' => false ];
-                    }
-                    foreach ( [ 'sat' => '土', 'sun' => '日・祝' ] as $key => $label ) {
-                        $am_s = get_field( "business_hours_{$key}_am_start", $footer_about_id );
-                        $am_e = get_field( "business_hours_{$key}_am_end",   $footer_about_id );
-                        $pm_s = get_field( "business_hours_{$key}_pm_start", $footer_about_id );
-                        $pm_e = get_field( "business_hours_{$key}_pm_end",   $footer_about_id );
+                $footer_rows = [];
+                if ( $footer_access_id && function_exists( 'get_field' ) ) {
+                    foreach ( $footer_days as $key => $label ) {
+                        $am_s = get_field( "business_hours_{$key}_am_start", $footer_access_id );
+                        $am_e = get_field( "business_hours_{$key}_am_end",   $footer_access_id );
+                        $pm_s = get_field( "business_hours_{$key}_pm_start", $footer_access_id );
+                        $pm_e = get_field( "business_hours_{$key}_pm_end",   $footer_access_id );
                         $closed = ! $am_s && ! $pm_s;
                         if ( $closed ) {
-                            $aggregated[] = [ 'day' => $label, 'time' => '休診', 'closed' => true ];
+                            $time_str = '休診';
                         } else {
-                            $am_str = ( $am_s && $am_e ) ? "{$am_s}〜{$am_e}" : null;
-                            $pm_str = ( $pm_s && $pm_e ) ? "{$pm_s}〜{$pm_e}" : null;
-                            $aggregated[] = [ 'day' => $label, 'time' => implode( ' / ', array_filter( [ $am_str, $pm_str ] ) ) ?: '–', 'closed' => false ];
+                            $parts = [];
+                            if ( $am_s && $am_e ) $parts[] = "{$am_s}〜{$am_e}";
+                            if ( $pm_s && $pm_e ) $parts[] = "{$pm_s}〜{$pm_e}";
+                            $time_str = implode( ' / ', $parts ) ?: '–';
                         }
+                        $footer_rows[] = [ 'day' => $label, 'time' => $time_str, 'closed' => $closed ];
                     }
                 }
-                if ( empty( $aggregated ) ) {
-                    // フォールバック
-                    $aggregated = [
-                        [ 'day' => '月〜金', 'time' => '9:00 – 18:00', 'closed' => false ],
-                        [ 'day' => '土',     'time' => '9:00 – 13:00', 'closed' => false ],
-                        [ 'day' => '日・祝', 'time' => '休診',         'closed' => true  ],
+                if ( empty( $footer_rows ) ) {
+                    $footer_rows = [
+                        [ 'day' => '月', 'time' => '9:00〜12:30 / 14:00〜18:00', 'closed' => false ],
+                        [ 'day' => '火', 'time' => '9:00〜12:30 / 14:00〜18:00', 'closed' => false ],
+                        [ 'day' => '水', 'time' => '9:00〜12:30 / 14:00〜18:00', 'closed' => false ],
+                        [ 'day' => '木', 'time' => '9:00〜12:30 / 14:00〜18:00', 'closed' => false ],
+                        [ 'day' => '金', 'time' => '9:00〜12:30 / 14:00〜18:00', 'closed' => false ],
+                        [ 'day' => '土', 'time' => '9:00〜13:00',               'closed' => false ],
+                        [ 'day' => '日・祝', 'time' => '休診',                  'closed' => true  ],
                     ];
                 }
                 ?>
-                <table class="text-sm text-teal-200 w-full">
-                    <?php foreach ( $aggregated as $row ) : ?>
-                        <tr class="<?php echo $row['closed'] ? 'text-red-300' : ''; ?>">
-                            <td class="pr-4 py-0.5"><?php echo esc_html( $row['day'] ); ?></td>
-                            <td><?php echo esc_html( $row['time'] ); ?></td>
+                <table class="text-sm w-full">
+                    <?php foreach ( $footer_rows as $row ) : ?>
+                        <tr class="border-b border-teal-800">
+                            <td class="py-1 pr-3 font-medium w-12 <?php echo $row['closed'] ? 'text-red-300' : 'text-teal-300'; ?>"><?php echo esc_html( $row['day'] ); ?></td>
+                            <td class="py-1 <?php echo $row['closed'] ? 'text-red-300' : 'text-teal-200'; ?>"><?php echo esc_html( $row['time'] ); ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </table>
