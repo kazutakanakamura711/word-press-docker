@@ -15,11 +15,11 @@
 
     <div class="max-w-4xl mx-auto px-4 py-16">
         <?php
-        // 「医院について」ページをSSOTとして基本情報・診療時間を参照する
-        $about_id = get_page_id_by_slug( 'about' );
-        $address  = ( $about_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_address', $about_id ) : '';
-        $phone    = ( $about_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_phone', $about_id ) : '';
-        $station  = ( $about_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_nearest_station', $about_id ) : '';
+        // 「診療時間・アクセス」ページをSSOTとして基本情報・診療時間を参照する
+        $access_id = get_page_id_by_slug( 'access' );
+        $address   = ( $access_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_address', $access_id ) : '';
+        $phone     = ( $access_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_phone', $access_id ) : '';
+        $station   = ( $access_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_nearest_station', $access_id ) : '';
         ?>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
             <!-- 基本情報 -->
@@ -51,7 +51,7 @@
             <!-- 診療時間 -->
             <div>
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">診療時間</h2>
-                <?php render_business_hours_table( $about_id ?: null ); ?>
+                <?php render_business_hours_table( $access_id ?: null ); ?>
             </div>
         </div>
 
