@@ -6,13 +6,44 @@
  * 設計方針（SSOT）:
  *   - クリニック基本情報・診療時間は「医院について」ページをマスタとして登録する。
  *   - アクセスページ等は get_field($name, $about_id) で参照する。
- *   - すべてのフィールドグループは post_type = page に紐付けているため、
- *     管理画面上はどのページでも編集欄が表示される。
- *     各ページの用途に合ったフィールドのみ入力すること。
+ *   - 各フィールドグループは関連ページにのみ表示されるよう location を最適化。
+ *     トップ: ヒーロー/セクション画像のみ
+ *     医院について: 院長情報・クリニック基本情報・診療時間
+ *     診療案内: 診療科目
  */
 if ( ! function_exists( 'acf_add_local_field_group' ) ) {
     return;
 }
+
+// ─────────────────────────────────────────────
+// カスタムロケーションルール: page_slug（ページスラッグ判定）
+// ACF標準にはスラッグ指定がないため独自ルールを追加
+// ─────────────────────────────────────────────
+add_filter( 'acf/location/rule_types', function ( $choices ) {
+    $choices['Page']['page_slug'] = 'ページスラッグ';
+    return $choices;
+} );
+
+add_filter( 'acf/location/rule_values/page_slug', function ( $choices ) {
+    $pages = get_pages( [ 'post_status' => 'any' ] );
+    foreach ( $pages as $page ) {
+        $choices[ $page->post_name ] = $page->post_title . ' (' . $page->post_name . ')';
+    }
+    return $choices;
+} );
+
+add_filter( 'acf/location/rule_match/page_slug', function ( $match, $rule, $options ) {
+    $post_id = isset( $options['post_id'] ) ? (int) $options['post_id'] : 0;
+    if ( ! $post_id ) {
+        return false;
+    }
+    $post = get_post( $post_id );
+    if ( ! $post ) {
+        return false;
+    }
+    $slug_matches = ( $post->post_name === $rule['value'] );
+    return $rule['operator'] === '==' ? $slug_matches : ! $slug_matches;
+}, 10, 3 );
 
 // ─────────────────────────────────────────────
 // 1. ページ共通設定（全ページ）
@@ -74,7 +105,7 @@ acf_add_local_field_group( [
 ] );
 
 // ─────────────────────────────────────────────
-// 3. 院長情報（「医院について」ページ用）
+// 3. 院長情報（「医院について」ページのみ）
 //    院長画像・氏名・専門科目・挨拶文
 // ─────────────────────────────────────────────
 acf_add_local_field_group( [
@@ -113,7 +144,7 @@ acf_add_local_field_group( [
         ],
     ],
     'location' => [
-        [ [ 'param' => 'post_type', 'operator' => '==', 'value' => 'page' ] ],
+        [ [ 'param' => 'page_slug', 'operator' => '==', 'value' => 'about' ] ],
     ],
     'menu_order' => 10,
     'position'   => 'normal',
@@ -150,7 +181,7 @@ acf_add_local_field_group( [
         ],
     ],
     'location' => [
-        [ [ 'param' => 'post_type', 'operator' => '==', 'value' => 'page' ] ],
+        [ [ 'param' => 'page_slug', 'operator' => '==', 'value' => 'about' ] ],
     ],
     'menu_order' => 20,
     'position'   => 'normal',
@@ -208,7 +239,7 @@ acf_add_local_field_group( [
     'title'  => '診療時間（医院についてページのみ入力）',
     'fields' => $hours_fields,
     'location' => [
-        [ [ 'param' => 'post_type', 'operator' => '==', 'value' => 'page' ] ],
+        [ [ 'param' => 'page_slug', 'operator' => '==', 'value' => 'about' ] ],
     ],
     'menu_order' => 30,
     'position'   => 'normal',
@@ -260,7 +291,7 @@ acf_add_local_field_group( [
     'title'  => '診療案内（診療案内ページのみ入力）',
     'fields' => $service_fields,
     'location' => [
-        [ [ 'param' => 'post_type', 'operator' => '==', 'value' => 'page' ] ],
+        [ [ 'param' => 'page_slug', 'operator' => '==', 'value' => 'services' ] ],
     ],
     'menu_order' => 40,
     'position'   => 'normal',
