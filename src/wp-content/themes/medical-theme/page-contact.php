@@ -5,10 +5,17 @@
 get_header(); ?>
 <main>
     <!-- ページヘッダー -->
-    <?php $header_img_url = function_exists( 'get_field' ) ? get_field( 'page_header_image' ) : ''; ?>
-    <div class="relative bg-teal-700 text-white py-16<?php echo $header_img_url ? ' bg-blend-overlay bg-cover bg-center' : ''; ?>"
-        <?php if ( $header_img_url ): ?>style="background-image: url('<?php echo esc_url( $header_img_url ); ?>')"<?php endif; ?>>
-        <?php if ( $header_img_url ): ?>
+    <?php
+    $header_img_url = function_exists('get_field') ? get_field('page_header_image') : '';
+$header_bg_style = $header_img_url
+    ? "background-image: url('" . esc_url($header_img_url) . "')"
+    : '';
+?>
+    <div class="relative bg-teal-700 text-white py-16<?php echo $header_img_url
+    ? ' bg-blend-overlay bg-cover bg-center'
+    : ''; ?>"
+        <?php if ($header_img_url): ?>style="<?php echo $header_bg_style; ?>"<?php endif; ?>>
+        <?php if ($header_img_url): ?>
             <div class="absolute inset-0 bg-teal-900/60"></div>
         <?php endif; ?>
         <div class="relative z-10 max-w-6xl mx-auto px-4 text-center">
@@ -32,10 +39,10 @@ get_header(); ?>
             'posts_per_page' => 1,
             'title' => '医療クリニック お問い合わせ',
         ]);
-        echo $cf7
-            ? do_shortcode('[contact-form-7 id="' . esc_attr($cf7[0]->ID) . '"]')
-            : '<p class="text-gray-600">現在フォームを準備中です。</p>';
-        ?>
+echo $cf7
+    ? do_shortcode('[contact-form-7 id="' . esc_attr($cf7[0]->ID) . '"]')
+    : '<p class="text-gray-600">現在フォームを準備中です。</p>';
+?>
     </div>
 </main>
 <?php get_footer(); ?>

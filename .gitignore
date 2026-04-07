@@ -33,6 +33,12 @@ src/wp-content/themes/index.php
 # node_modules（全テーマ共通）
 src/wp-content/themes/*/node_modules/
 
+# Composer vendor（全テーマ共通）
+src/wp-content/themes/*/vendor/
+
+# php-cs-fixer キャッシュ
+src/wp-content/themes/*/.php-cs-fixer.cache
+
 # Viteビルド後のアセット（全テーマ共通）
 src/wp-content/themes/*/assets/
 

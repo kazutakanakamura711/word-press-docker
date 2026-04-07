@@ -11,7 +11,7 @@
     "lint": "eslint src/ts",
     "lint:fix": "eslint src/ts --fix",
     "format": "prettier --write src/ts src/scss \"**/*.php\"",
-    "prepare": "cd ../../../../ && git config core.hooksPath src/wp-content/themes/my-theme/.husky"
+    "prepare": "cd ../../../../ && git config core.hooksPath .husky"
   },
   "lint-staged": {
     "src/ts/**/*.ts": [

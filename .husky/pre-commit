@@ -1,0 +1,8 @@
+#!/bin/sh
+# pre-commit hook: 両テーマの lint-staged を実行する
+
+# medical-theme: PHP は php-cs-fixer (Docker), TS/CSS は prettier
+(cd src/wp-content/themes/medical-theme && npx lint-staged)
+
+# my-theme: PHP/TS/CSS は prettier
+(cd src/wp-content/themes/my-theme && npx lint-staged)

@@ -5,14 +5,18 @@
  * 診療時間は render_business_hours_table() で出力する。
  */
 
-$access_id = get_page_id_by_slug( 'access' );
-$address   = ( $access_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_address',          $access_id ) : '';
-$phone     = ( $access_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_phone',             $access_id ) : '';
-$station   = ( $access_id && function_exists( 'get_field' ) ) ? get_field( 'clinic_nearest_station',   $access_id ) : '';
+$access_id = get_page_id_by_slug('access');
+$address =
+    $access_id && function_exists('get_field') ? get_field('clinic_address', $access_id) : '';
+$phone = $access_id && function_exists('get_field') ? get_field('clinic_phone', $access_id) : '';
+$station =
+    $access_id && function_exists('get_field')
+        ? get_field('clinic_nearest_station', $access_id)
+        : '';
 
 // 診療時間の出力をバッファに取得し、ACFデータ有無を判定する
 ob_start();
-render_business_hours_table( $access_id );
+render_business_hours_table($access_id);
 $hours_output = ob_get_clean();
 ?>
 <section class="py-24 bg-teal-50">
@@ -29,9 +33,9 @@ $hours_output = ob_get_clean();
                 <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
                     <span class="text-teal-600">🕐</span> 診療時間
                 </h3>
-                <?php if ( $hours_output ) : ?>
+                <?php if ($hours_output): ?>
                     <?php echo $hours_output; ?>
-                <?php else : ?>
+                <?php else: ?>
                     <table class="w-full text-sm">
                         <thead>
                             <tr class="border-b-2 border-teal-100">
@@ -74,18 +78,26 @@ $hours_output = ob_get_clean();
                     </div>
                     <div>
                         <dt class="font-semibold text-teal-700 mb-1">住所</dt>
-                        <dd class="text-gray-700"><?php echo nl2br( esc_html( $address ?: '〒000-0000　都道府県市区町村 番地' ) ); ?></dd>
+                        <dd class="text-gray-700"><?php echo nl2br(
+                            esc_html($address ?: '〒000-0000　都道府県市区町村 番地'),
+                        ); ?></dd>
                     </div>
                     <div>
                         <dt class="font-semibold text-teal-700 mb-1">電話番号</dt>
                         <dd>
                             <?php $tel = $phone ?: '000-000-0000'; ?>
-                            <a href="tel:<?php echo esc_attr( $tel ); ?>" class="text-teal-700 hover:underline font-medium"><?php echo esc_html( $tel ); ?></a>
+                            <a href="tel:<?php echo esc_attr(
+                                $tel,
+                            ); ?>" class="text-teal-700 hover:underline font-medium"><?php echo esc_html(
+                                $tel,
+                            ); ?></a>
                         </dd>
                     </div>
                     <div>
                         <dt class="font-semibold text-teal-700 mb-1">アクセス</dt>
-                        <dd class="text-gray-700"><?php echo esc_html( $station ?: '○○線「○○駅」徒歩5分' ); ?></dd>
+                        <dd class="text-gray-700"><?php echo esc_html(
+                            $station ?: '○○線「○○駅」徒歩5分',
+                        ); ?></dd>
                     </div>
                 </dl>
                 <div class="mt-8">

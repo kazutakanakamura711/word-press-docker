@@ -1,5 +1,8 @@
 FROM wordpress:6.9.4-php8.2-apache
 
+# Composer（ローカル環境を汚さずにPHPパッケージ管理できるようにする）
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+
 # PHP拡張 & 必要パッケージの追加（任意）
 RUN apt-get update && apt-get install -y \
     less \

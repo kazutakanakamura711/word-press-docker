@@ -4,12 +4,11 @@
  * 最新のお知らせ（newsカスタム投稿タイプ）
  */
 $news_posts = new WP_Query([
-    'post_type'      => 'news',
+    'post_type' => 'news',
     'posts_per_page' => 3,
-    'orderby'        => 'date',
-    'order'          => 'DESC',
-]);
-?>
+    'orderby' => 'date',
+    'order' => 'DESC',
+]); ?>
 <section class="py-24 bg-white">
     <div class="max-w-4xl mx-auto px-4">
         <div class="flex items-end justify-between mb-12">
@@ -28,9 +27,13 @@ $news_posts = new WP_Query([
 
         <?php if ($news_posts->have_posts()): ?>
             <div class="divide-y divide-gray-100">
-                <?php while ($news_posts->have_posts()): $news_posts->the_post(); ?>
+                <?php
+                while ($news_posts->have_posts()):
+                    $news_posts->the_post(); ?>
                     <div class="flex flex-col sm:flex-row gap-3 sm:gap-6 py-5 hover:bg-gray-50 rounded-lg px-3 -mx-3 transition-colors">
-                        <time class="text-gray-400 text-sm flex-shrink-0 sm:w-32 sm:pt-0.5" datetime="<?php echo get_the_date('Y-m-d'); ?>">
+                        <time class="text-gray-400 text-sm shrink-0 sm:w-32 sm:pt-0.5" datetime="<?php echo get_the_date(
+                            'Y-m-d',
+                        ); ?>">
                             <?php echo get_the_date('Y年m月d日'); ?>
                         </time>
                         <div class="flex-1">
@@ -41,7 +44,10 @@ $news_posts = new WP_Query([
                             </h3>
                         </div>
                     </div>
-                <?php endwhile; wp_reset_postdata(); ?>
+                <?php
+                endwhile;
+            wp_reset_postdata();
+            ?>
             </div>
         <?php else: ?>
             <div class="py-12 text-center text-gray-400">

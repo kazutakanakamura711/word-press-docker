@@ -9,7 +9,21 @@
     "watch": "vite build --watch",
     "lint": "eslint src/ts",
     "lint:fix": "eslint src/ts --fix",
-    "format": "prettier --write src/ts src/css \"**/*.php\""
+    "format": "prettier --write src/ts src/css && bash ../../../../.vscode/php-cs-fixer-docker.sh",
+    "format:php": "bash ../../../../.vscode/php-cs-fixer-docker.sh",
+    "prepare": "cd ../../../../ && git config core.hooksPath .husky"
+  },
+  "lint-staged": {
+    "src/ts/**/*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "src/css/**/*.css": [
+      "prettier --write"
+    ],
+    "**/*.php": [
+      "bash -c 'bash ../../../../.vscode/php-cs-fixer-docker.sh'"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -21,6 +35,8 @@
     "eslint": "^10.1.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.0.0",
     "typescript-eslint": "^8.57.2",
