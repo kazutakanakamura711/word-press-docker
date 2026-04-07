@@ -18,7 +18,7 @@
         </div>
 
         <!-- PC ナビ -->
-        <nav class="hidden md:flex items-center gap-8">
+        <nav class="hidden md:flex items-center gap-6">
             <?php wp_nav_menu([
                 'theme_location' => 'header-menu',
                 'container' => false,
@@ -61,10 +61,8 @@
 <!-- ヘッダー分のスペーサー -->
 <div class="h-16"></div>
 
-<?php /**
- * ナビメニュー用カスタムウォーカー（PC用）
- */
-class Medical_Nav_Walker extends Walker_Nav_Menu
+<!-- ナビメニュー用カスタムウォーカー（PC用） -->
+<?php class Medical_Nav_Walker extends Walker_Nav_Menu
 {
     public function start_el(&$output, $item, $depth = 0, $args = null, $id = 0): void
     {
@@ -73,6 +71,12 @@ class Medical_Nav_Walker extends Walker_Nav_Menu
         $is_active = in_array('current-menu-item', (array) $item->classes, true);
         $classes = 'nav-link' . ($is_active ? ' nav-link--active' : '');
         $output .=
-            '<a href="' . esc_url($url) . '" class="' . $classes . '">' . esc_html($title) . '</a>';
+            '<a href="' .
+            esc_url($url) .
+            '" class="' .
+            $classes .
+            '">' .
+            esc_html($title) .
+            '</a>';
     }
 }

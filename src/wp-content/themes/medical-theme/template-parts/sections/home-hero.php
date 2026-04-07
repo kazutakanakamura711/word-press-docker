@@ -4,10 +4,14 @@
  * クリニック名 + キャッチコピー + 背景画像
  */
 // 管理画面から設定した背景画像を使用。未設定の場合は背景色のみで表示。
-$hero_img_url = function_exists( 'get_field' ) ? get_field( 'hero_background_image' ) : ''; ?>
+$hero_img_url = function_exists('get_field') ? get_field('hero_background_image') : '';
+$bg_style = $hero_img_url ? "background-image: url('" . esc_url($hero_img_url) . "')" : '';
+?>
 <section
-    class="relative min-h-[80vh] flex items-center justify-center bg-teal-900<?php echo $hero_img_url ? ' bg-blend-overlay bg-cover bg-center' : ''; ?>"
-    <?php if ( $hero_img_url ): ?>style="background-image: url('<?php echo esc_url( $hero_img_url ); ?>')"<?php endif; ?>
+    class="relative min-h-[80vh] flex items-center justify-center bg-teal-900<?php echo $hero_img_url
+        ? ' bg-blend-overlay bg-cover bg-center'
+        : ''; ?>"
+    <?php if ($hero_img_url): ?>style="<?php echo $bg_style; ?>"<?php endif; ?>
 >
     <!-- オーバーレイ -->
     <div class="absolute inset-0 bg-teal-900/60"></div>

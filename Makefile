@@ -1,4 +1,4 @@
-.PHONY: up down install copy-images build watch dev
+.PHONY: up down install install-medical composer-install copy-images build watch dev
 
 # Docker起動
 up:
@@ -8,9 +8,17 @@ up:
 down:
 	docker compose down
 
-# npm install（初回セットアップ時に実行）
+# npm install（my-theme）
 install:
 	cd src/wp-content/themes/my-theme && npm install
+
+# npm install（medical-theme）
+install-medical:
+	cd src/wp-content/themes/medical-theme && npm install
+
+# Composer install（医療テーマのPHP依存パッケージ。Dockerコンテナが起動している必要あり）
+composer-install:
+	docker exec -w /var/www/html/wp-content/themes/medical-theme wordpress_app composer install
 
 # src/images/ を assets/images/ にコピー
 copy-images:

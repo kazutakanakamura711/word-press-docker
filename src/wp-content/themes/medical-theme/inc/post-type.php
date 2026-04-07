@@ -1,4 +1,5 @@
 <?php
+
 // カスタム投稿タイプの登録
 add_action('init', function () {
     // News（お知らせ）
@@ -23,6 +24,4 @@ add_action('init', function () {
         'rewrite' => ['slug' => 'service'],
         'show_in_rest' => true,
     ]);
-
 });
-
