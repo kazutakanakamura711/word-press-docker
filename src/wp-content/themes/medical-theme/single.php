@@ -1,6 +1,8 @@
 <?php get_header(); ?>
 <main class="max-w-3xl mx-auto px-4 py-16">
-    <?php if (have_posts()): while (have_posts()): the_post(); ?>
+    <?php if (have_posts()):
+        while (have_posts()):
+            the_post(); ?>
         <article>
             <!-- ヘッダー -->
             <div class="mb-8">
@@ -8,7 +10,9 @@
                     <span class="bg-teal-100 text-teal-700 text-xs font-medium px-3 py-1 rounded-full">
                         <?php echo esc_html(get_post_type_object(get_post_type())->label); ?>
                     </span>
-                    <time class="text-gray-400 text-sm" datetime="<?php echo get_the_date('Y-m-d'); ?>">
+                    <time class="text-gray-400 text-sm" datetime="<?php echo get_the_date(
+                        'Y-m-d',
+                    ); ?>">
                         <?php echo get_the_date('Y年m月d日'); ?>
                     </time>
                 </div>
@@ -35,6 +39,8 @@
                 &larr; 一覧に戻る
             </a>
         </div>
-    <?php endwhile; endif; ?>
+    <?php
+        endwhile;
+    endif; ?>
 </main>
 <?php get_footer(); ?>
