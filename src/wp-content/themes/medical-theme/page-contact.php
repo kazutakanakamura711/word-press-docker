@@ -37,6 +37,7 @@ $header_bg_style = $header_img_url
         $cf7 = get_posts([
             'post_type' => 'wpcf7_contact_form',
             'posts_per_page' => 1,
+            // コンタクトフォームでタイトルを入力する際、このtitleと一致させる必要がある
             'title' => '医療クリニック お問い合わせ',
         ]);
 echo $cf7
