@@ -30,30 +30,9 @@ $news_posts = new WP_Query([
                 <?php
                 while ($news_posts->have_posts()):
                     $news_posts->the_post(); ?>
-                    <article class="relative bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-                        <a href="<?php the_permalink(); ?>" class="absolute inset-0 z-10" aria-label="<?php the_title_attribute(); ?>"></a>
-                        <?php if (has_post_thumbnail()): ?>
-                            <div class="block overflow-hidden">
-                                <?php the_post_thumbnail('medium', [
-                                    'class' =>
-                                        'w-full h-48 object-cover hover:scale-105 transition-transform duration-300',
-                                ]); ?>
-                            </div>
-                        <?php else: ?>
-                            <div class="w-full h-48 bg-teal-50 flex items-center justify-center text-teal-400 text-2xl font-medium">お知らせ</div>
-                        <?php endif; ?>
-                        <div class="p-5">
-                            <time class="text-gray-400 text-xs" datetime="<?php echo get_the_date(
-                                'Y-m-d',
-                            ); ?>">
-                                <?php echo get_the_date('Y年m月d日'); ?>
-                            </time>
-                            <h3 class="font-bold text-gray-900 mt-1 mb-2 line-clamp-2">
-                                <?php the_title(); ?>
-                            </h3>
-                            <p class="text-gray-500 text-sm line-clamp-3"><?php the_excerpt(); ?></p>
-                        </div>
-                    </article>
+                    <?php get_template_part('template-parts/components/post-card', null, [
+                        'heading_tag' => 'h3',
+                    ]); ?>
                 <?php
                 endwhile;
                 wp_reset_postdata();

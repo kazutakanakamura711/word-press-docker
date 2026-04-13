@@ -279,6 +279,17 @@ for ($i = 1; $i <= 16; $i++) {
         'preview_size' => 'medium',
         'instructions' => '未設定の場合はプレースホルダーが表示されます。',
     ];
+    $service_fields[] = [
+        'key' => "field_svc_{$num}_department",
+        'label' => '詳細ページ（診療科）',
+        'name' => "service_{$num}_department",
+        'type' => 'post_object',
+        'post_type' => ['department'],
+        'allow_null' => 1,
+        'multiple' => 0,
+        'return_format' => 'object',
+        'instructions' => '詳細ページがある場合は対応する診療科投稿を選択してください。',
+    ];
 }
 
 acf_add_local_field_group([
@@ -287,6 +298,63 @@ acf_add_local_field_group([
     'fields' => $service_fields,
     'location' => [[['param' => 'page_slug', 'operator' => '==', 'value' => 'services']]],
     'menu_order' => 40,
+    'position' => 'normal',
+]);
+
+// ─────────────────────────────────────────────
+// 7. 診療科詳細（department カスタム投稿タイプ）
+//    概要・症状リスト・診療内容
+// ─────────────────────────────────────────────
+$dept_equipment_fields = [];
+for ($i = 1; $i <= 6; $i++) {
+    $n = str_pad($i, 2, '0', STR_PAD_LEFT);
+    $dept_equipment_fields[] = [
+        'key' => "field_dept_equipment_image_{$n}",
+        'label' => "設備画像 {$i}",
+        'name' => "equipment_image_{$n}",
+        'type' => 'image',
+        'return_format' => 'array',
+        'preview_size' => 'medium',
+        'instructions' => '診療設備・院内の写真を設定してください。',
+    ];
+}
+
+acf_add_local_field_group([
+    'key' => 'group_department',
+    'title' => '診療科ページ',
+    'fields' => array_merge(
+        [
+            [
+                'key' => 'field_dept_diseases',
+                'label' => '取扱い疾患',
+                'name' => 'diseases',
+                'type' => 'textarea',
+                'rows' => 6,
+                'placeholder' =>
+                    '1行に1つの疾患名を入力してください。例：&#10;高血圧&#10;糖尿病&#10;高脂血症',
+                'instructions' => '1行に1項目で入力してください。',
+            ],
+            [
+                'key' => 'field_dept_visit_soon',
+                'label' => 'こんな症状はお早目に受診を',
+                'name' => 'visit_soon',
+                'type' => 'textarea',
+                'rows' => 5,
+                'placeholder' => '受診を促す症状の説明を入力してください。',
+            ],
+            [
+                'key' => 'field_dept_examination',
+                'label' => '検査・治療について',
+                'name' => 'examination',
+                'type' => 'textarea',
+                'rows' => 5,
+                'placeholder' => '検査・治療についての説明を入力してください。',
+            ],
+        ],
+        $dept_equipment_fields,
+    ),
+    'location' => [[['param' => 'post_type', 'operator' => '==', 'value' => 'department']]],
+    'menu_order' => 50,
     'position' => 'normal',
 ]);
 
