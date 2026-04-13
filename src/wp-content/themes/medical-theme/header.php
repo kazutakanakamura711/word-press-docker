@@ -71,12 +71,6 @@
         $is_active = in_array('current-menu-item', (array) $item->classes, true);
         $classes = 'nav-link' . ($is_active ? ' nav-link--active' : '');
         $output .=
-            '<a href="' .
-            esc_url($url) .
-            '" class="' .
-            $classes .
-            '">' .
-            esc_html($title) .
-            '</a>';
+            '<a href="' . esc_url($url) . '" class="' . $classes . '">' . esc_html($title) . '</a>';
     }
 }

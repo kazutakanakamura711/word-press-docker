@@ -3,13 +3,13 @@
     <!-- ページヘッダー -->
     <?php
     $header_img_url = function_exists('get_field') ? get_field('page_header_image') : '';
-$header_bg_style = $header_img_url
-    ? "background-image: url('" . esc_url($header_img_url) . "')"
-    : '';
-?>
+    $header_bg_style = $header_img_url
+        ? "background-image: url('" . esc_url($header_img_url) . "')"
+        : '';
+    ?>
     <div class="relative bg-teal-700 text-white py-16<?php echo $header_img_url
-    ? ' bg-blend-overlay bg-cover bg-center'
-    : ''; ?>"
+        ? ' bg-blend-overlay bg-cover bg-center'
+        : ''; ?>"
         <?php if ($header_img_url): ?>style="<?php echo $header_bg_style; ?>"<?php endif; ?>>
         <?php if ($header_img_url): ?>
             <div class="absolute inset-0 bg-teal-900/60"></div>
@@ -22,60 +22,60 @@ $header_bg_style = $header_img_url
 
     <div class="max-w-6xl mx-auto px-4 py-16">
         <?php
-    // 診療案内ページ自身のACFフィールド（service_01〜service_16）を参照する
-    // ACFが未設定の場合はフォールバックデータを表示する
-    $fallback_services = [
-        [
-            'title' => '内科',
-            'desc' => '風邪・発熱・生活習慣病など、一般的な内科疾患に対応いたします。',
-            'image' => '',
-        ],
-        [
-            'title' => '小児科',
-            'desc' => 'お子様の成長・発達から感染症まで、お子様の健康をサポートします。',
-            'image' => '',
-        ],
-        [
-            'title' => '整形外科',
-            'desc' => '肩・腰・膝の痛みやスポーツ外傷など、運動器全般の治療を行います。',
-            'image' => '',
-        ],
-        [
-            'title' => '皮膚科',
-            'desc' => 'アトピー・湿疹・蕁麻疹などの皮膚疾患を専門的に診察します。',
-            'image' => '',
-        ],
-        [
-            'title' => '心療内科',
-            'desc' => 'ストレス・不眠・不安障害など、こころとからだの不調に対応します。',
-            'image' => '',
-        ],
-        [
-            'title' => '健康診断',
-            'desc' => '各種健康診断・特定健診・人間ドックに対応しています。',
-            'image' => '',
-        ],
-    ];
+        // 診療案内ページ自身のACFフィールド（service_01〜service_16）を参照する
+        // ACFが未設定の場合はフォールバックデータを表示する
+        $fallback_services = [
+            [
+                'title' => '内科',
+                'desc' => '風邪・発熱・生活習慣病など、一般的な内科疾患に対応いたします。',
+                'image' => '',
+            ],
+            [
+                'title' => '小児科',
+                'desc' => 'お子様の成長・発達から感染症まで、お子様の健康をサポートします。',
+                'image' => '',
+            ],
+            [
+                'title' => '整形外科',
+                'desc' => '肩・腰・膝の痛みやスポーツ外傷など、運動器全般の治療を行います。',
+                'image' => '',
+            ],
+            [
+                'title' => '皮膚科',
+                'desc' => 'アトピー・湿疹・蕁麻疹などの皮膚疾患を専門的に診察します。',
+                'image' => '',
+            ],
+            [
+                'title' => '心療内科',
+                'desc' => 'ストレス・不眠・不安障害など、こころとからだの不調に対応します。',
+                'image' => '',
+            ],
+            [
+                'title' => '健康診断',
+                'desc' => '各種健康診断・特定健診・人間ドックに対応しています。',
+                'image' => '',
+            ],
+        ];
 
-$acf_services = [];
-if (function_exists('get_field')) {
-    for ($i = 1; $i <= 16; $i++) {
-        $num = str_pad($i, 2, '0', STR_PAD_LEFT);
-        $title = get_field("service_{$num}_title");
-        $desc = get_field("service_{$num}_description");
-        $image = get_field("service_{$num}_image");
-        if ($title) {
-            $acf_services[] = [
-                'title' => $title,
-                'desc' => $desc ?: '',
-                'image' => $image ?: '',
-            ];
+        $acf_services = [];
+        if (function_exists('get_field')) {
+            for ($i = 1; $i <= 16; $i++) {
+                $num = str_pad($i, 2, '0', STR_PAD_LEFT);
+                $title = get_field("service_{$num}_title");
+                $desc = get_field("service_{$num}_description");
+                $image = get_field("service_{$num}_image");
+                if ($title) {
+                    $acf_services[] = [
+                        'title' => $title,
+                        'desc' => $desc ?: '',
+                        'image' => $image ?: '',
+                    ];
+                }
+            }
         }
-    }
-}
 
-$services_to_show = $acf_services ?: $fallback_services;
-?>
+        $services_to_show = $acf_services ?: $fallback_services;
+        ?>
 
         <div class="space-y-16">
             <?php foreach ($services_to_show as $index => $service):
