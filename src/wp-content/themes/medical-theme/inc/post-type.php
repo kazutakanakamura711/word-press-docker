@@ -24,4 +24,16 @@ add_action('init', function () {
         'rewrite' => ['slug' => 'service'],
         'show_in_rest' => true,
     ]);
+
+    // Department（診療科詳細ページ）
+    // /services/[slug]/ の形式でURLを生成（services固定ページ配下に配置）
+    register_post_type('department', [
+        'label' => '診療科',
+        'public' => true,
+        'has_archive' => false,
+        'supports' => ['title', 'thumbnail'],
+        'menu_icon' => 'dashicons-clipboard',
+        'rewrite' => ['slug' => 'services'],
+        'show_in_rest' => true,
+    ]);
 });
