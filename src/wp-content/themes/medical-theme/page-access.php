@@ -3,13 +3,13 @@
     <!-- ページヘッダー -->
     <?php
     $header_img_url = function_exists('get_field') ? get_field('page_header_image') : '';
-$header_bg_style = $header_img_url
-    ? "background-image: url('" . esc_url($header_img_url) . "')"
-    : '';
-?>
+    $header_bg_style = $header_img_url
+        ? "background-image: url('" . esc_url($header_img_url) . "')"
+        : '';
+    ?>
     <div class="relative bg-teal-700 text-white py-16<?php echo $header_img_url
-    ? ' bg-blend-overlay bg-cover bg-center'
-    : ''; ?>"
+        ? ' bg-blend-overlay bg-cover bg-center'
+        : ''; ?>"
         <?php if ($header_img_url): ?>style="<?php echo $header_bg_style; ?>"<?php endif; ?>>
         <?php if ($header_img_url): ?>
             <div class="absolute inset-0 bg-teal-900/60"></div>
@@ -22,19 +22,19 @@ $header_bg_style = $header_img_url
 
     <div class="max-w-4xl mx-auto px-4 py-16">
         <?php
-    // 「診療時間・アクセス」ページをSSOTとして基本情報・診療時間を参照する
-    $access_id = get_page_id_by_slug('access');
-$address =
-    $access_id && function_exists('get_field')
-        ? get_field('clinic_address', $access_id)
-        : '';
-$phone =
-    $access_id && function_exists('get_field') ? get_field('clinic_phone', $access_id) : '';
-$station =
-    $access_id && function_exists('get_field')
-        ? get_field('clinic_nearest_station', $access_id)
-        : '';
-?>
+        // 「診療時間・アクセス」ページをSSOTとして基本情報・診療時間を参照する
+        $access_id = get_page_id_by_slug('access');
+        $address =
+            $access_id && function_exists('get_field')
+                ? get_field('clinic_address', $access_id)
+                : '';
+        $phone =
+            $access_id && function_exists('get_field') ? get_field('clinic_phone', $access_id) : '';
+        $station =
+            $access_id && function_exists('get_field')
+                ? get_field('clinic_nearest_station', $access_id)
+                : '';
+        ?>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
             <!-- 基本情報 -->
             <div>
@@ -57,8 +57,8 @@ $station =
                             <a href="tel:<?php echo esc_attr(
                                 preg_replace('/[^0-9]/', '', $phone_display),
                             ); ?>" class="text-teal-700 hover:underline"><?php echo esc_html(
-                                $phone_display,
-                            ); ?>
+    $phone_display,
+); ?>
                             </a>
                         </dd>
                     </div>

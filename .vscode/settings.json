@@ -1,21 +1,11 @@
 {
   // ── PHP ──────────────────────────────────────────────────────────────────
-  // このプロジェクト専用: PHPフォーマッターを php-cs-fixer（Docker経由）に設定
+  // このプロジェクト専用: PHPフォーマッターを Prettier に設定
   "[php]": {
-    "editor.defaultFormatter": "junstyle.php-cs-fixer",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true
   },
 
-  // php-cs-fixer 拡張 (junstyle.php-cs-fixer) の設定
-  // executablePath に Docker ラッパースクリプトを指定する。
-  // スクリプトがホストパスをコンテナパスに変換し docker exec で実行する。
-  // ※ 保存時の整形には Docker コンテナ (wordpress_app) が起動している必要があります。
-  "php-cs-fixer.executablePath": "${workspaceFolder}/.vscode/php-cs-fixer-docker.sh",
-  "php-cs-fixer.config": "${workspaceFolder}/src/wp-content/themes/medical-theme/.php-cs-fixer.dist.php",
-  "php-cs-fixer.allowRisky": false,
-
   // ── 推奨拡張 ─────────────────────────────────────────────────────────────
-  // php-cs-fixer 拡張がインストールされていない場合は以下からインストールしてください:
-  // https://marketplace.visualstudio.com/items?itemName=junstyle.php-cs-fixer
   "extensions.ignoreRecommendations": false
 }

@@ -9,8 +9,7 @@
     "watch": "vite build --watch",
     "lint": "eslint src/ts",
     "lint:fix": "eslint src/ts --fix",
-    "format": "prettier --write src/ts src/css && bash ../../../../.vscode/php-cs-fixer-docker.sh",
-    "format:php": "bash ../../../../.vscode/php-cs-fixer-docker.sh",
+    "format": "prettier --write 'src/ts/**' 'src/css/**' '**/*.php'",
     "prepare": "cd ../../../../ && git config core.hooksPath .husky"
   },
   "lint-staged": {
@@ -22,7 +21,7 @@
       "prettier --write"
     ],
     "**/*.php": [
-      "bash -c 'bash ../../../../.vscode/php-cs-fixer-docker.sh'"
+      "prettier --write"
     ]
   },
   "keywords": [],
