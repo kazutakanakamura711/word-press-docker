@@ -10,7 +10,7 @@ $news_posts = new WP_Query([
     'order' => 'DESC',
 ]); ?>
 <section class="py-24 bg-white">
-    <div class="max-w-4xl mx-auto px-4">
+    <div class="max-w-6xl mx-auto px-4">
         <div class="flex items-end justify-between mb-12">
             <div>
                 <p class="text-teal-600 text-sm font-semibold tracking-widest uppercase mb-2">News</p>
@@ -26,28 +26,38 @@ $news_posts = new WP_Query([
         </div>
 
         <?php if ($news_posts->have_posts()): ?>
-            <div class="divide-y divide-gray-100">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <?php
                 while ($news_posts->have_posts()):
                     $news_posts->the_post(); ?>
-                    <div class="flex flex-col sm:flex-row gap-3 sm:gap-6 py-5 hover:bg-gray-50 rounded-lg px-3 -mx-3 transition-colors">
-                        <time class="text-gray-400 text-sm shrink-0 sm:w-32 sm:pt-0.5" datetime="<?php echo get_the_date(
-                            'Y-m-d',
-                        ); ?>">
-                            <?php echo get_the_date('Y年m月d日'); ?>
-                        </time>
-                        <div class="flex-1">
-                            <h3 class="font-medium text-gray-900">
-                                <a href="<?php the_permalink(); ?>" class="hover:text-teal-700 transition-colors">
-                                    <?php the_title(); ?>
-                                </a>
+                    <article class="relative bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+                        <a href="<?php the_permalink(); ?>" class="absolute inset-0 z-10" aria-label="<?php the_title_attribute(); ?>"></a>
+                        <?php if (has_post_thumbnail()): ?>
+                            <div class="block overflow-hidden">
+                                <?php the_post_thumbnail('medium', [
+                                    'class' =>
+                                        'w-full h-48 object-cover hover:scale-105 transition-transform duration-300',
+                                ]); ?>
+                            </div>
+                        <?php else: ?>
+                            <div class="w-full h-48 bg-teal-50 flex items-center justify-center text-teal-400 text-2xl font-medium">お知らせ</div>
+                        <?php endif; ?>
+                        <div class="p-5">
+                            <time class="text-gray-400 text-xs" datetime="<?php echo get_the_date(
+                                'Y-m-d',
+                            ); ?>">
+                                <?php echo get_the_date('Y年m月d日'); ?>
+                            </time>
+                            <h3 class="font-bold text-gray-900 mt-1 mb-2 line-clamp-2">
+                                <?php the_title(); ?>
                             </h3>
+                            <p class="text-gray-500 text-sm line-clamp-3"><?php the_excerpt(); ?></p>
                         </div>
-                    </div>
+                    </article>
                 <?php
                 endwhile;
-            wp_reset_postdata();
-            ?>
+                wp_reset_postdata();
+                ?>
             </div>
         <?php else: ?>
             <div class="py-12 text-center text-gray-400">

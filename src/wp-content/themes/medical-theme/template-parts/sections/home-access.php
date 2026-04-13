@@ -89,8 +89,8 @@ $hours_output = ob_get_clean();
                             <a href="tel:<?php echo esc_attr(
                                 $tel,
                             ); ?>" class="text-teal-700 hover:underline font-medium"><?php echo esc_html(
-                                $tel,
-                            ); ?></a>
+    $tel,
+); ?></a>
                         </dd>
                     </div>
                     <div>
