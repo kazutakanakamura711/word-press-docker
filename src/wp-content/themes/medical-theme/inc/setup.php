@@ -38,3 +38,10 @@ register_nav_menus([
     'header-menu' => 'ヘッダーメニュー',
     'footer-menu' => 'フッターメニュー',
 ]);
+
+// 1ページあたりの投稿数を9件に設定
+add_action('pre_get_posts', function (WP_Query $query) {
+    if (!is_admin() && $query->is_main_query() && ($query->is_archive() || $query->is_home())) {
+        $query->set('posts_per_page', 9);
+    }
+});
