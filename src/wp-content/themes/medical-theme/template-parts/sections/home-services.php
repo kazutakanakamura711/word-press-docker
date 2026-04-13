@@ -13,14 +13,25 @@ if ($services_page_id && function_exists('get_field')) {
         $num = str_pad($i, 2, '0', STR_PAD_LEFT);
         $title = get_field("service_{$num}_title", $services_page_id);
         if ($title) {
-            $services_to_show[] = $title;
+            $dept = get_field("service_{$num}_department", $services_page_id);
+            $services_to_show[] = [
+                'title' => $title,
+                'dept_url' => $dept ? get_permalink($dept) : '',
+            ];
         }
     }
 }
 
 // フォールバックデータ（ACF未設定時）
 if (empty($services_to_show)) {
-    $services_to_show = ['内科', '小児科', '整形外科', '皮膚科', '心療内科', '健康診断'];
+    $services_to_show = [
+        ['title' => '内科', 'dept_url' => ''],
+        ['title' => '小児科', 'dept_url' => ''],
+        ['title' => '整形外科', 'dept_url' => ''],
+        ['title' => '皮膚科', 'dept_url' => ''],
+        ['title' => '心療内科', 'dept_url' => ''],
+        ['title' => '健康診断', 'dept_url' => ''],
+    ];
 }
 ?>
 <section class="py-24 bg-gray-50">
@@ -32,10 +43,21 @@ if (empty($services_to_show)) {
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <?php foreach ($services_to_show as $title): ?>
-                <div class="bg-white rounded-xl py-5 px-6 text-center shadow-sm border border-gray-100 hover:border-teal-300 hover:shadow-md transition-all">
-                    <p class="font-semibold text-gray-800"><?php echo esc_html($title); ?></p>
-                </div>
+            <?php foreach ($services_to_show as $service): ?>
+                <?php if ($service['dept_url']): ?>
+                    <a href="<?php echo esc_url($service['dept_url']); ?>"
+                        class="block bg-white rounded-xl py-5 px-6 text-center shadow-sm border border-gray-100 hover:border-teal-300 hover:shadow-md transition-all">
+                        <p class="font-semibold text-gray-800"><?php echo esc_html(
+                            $service['title'],
+                        ); ?></p>
+                    </a>
+                <?php else: ?>
+                    <div class="bg-white rounded-xl py-5 px-6 text-center shadow-sm border border-gray-100">
+                        <p class="font-semibold text-gray-800"><?php echo esc_html(
+                            $service['title'],
+                        ); ?></p>
+                    </div>
+                <?php endif; ?>
             <?php endforeach; ?>
         </div>
 

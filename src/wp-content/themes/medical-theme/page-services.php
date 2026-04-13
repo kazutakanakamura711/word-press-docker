@@ -65,10 +65,12 @@
                 $desc = get_field("service_{$num}_description");
                 $image = get_field("service_{$num}_image");
                 if ($title) {
+                    $dept = get_field("service_{$num}_department");
                     $acf_services[] = [
                         'title' => $title,
                         'desc' => $desc ?: '',
                         'image' => $image ?: '',
+                        'dept_url' => $dept ? get_permalink($dept) : '',
                     ];
                 }
             }
@@ -108,6 +110,15 @@
                     <p class="text-gray-600 leading-relaxed"><?php echo esc_html(
                         $service['desc'],
                     ); ?></p>
+                    <?php if (!empty($service['dept_url'])): ?>
+                        <a href="<?php echo esc_url($service['dept_url']); ?>"
+                            class="inline-flex items-center gap-1 mt-6 text-teal-700 hover:text-teal-900 font-medium text-sm transition-colors">
+                            詳細を見る
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
             <?php
