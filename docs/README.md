@@ -8,6 +8,27 @@
 | PHP          | 8.2.29       |
 | データベース | MySQL 8.0.35 |
 | WordPress    | 6.9.4        |
+| Node.js      | 24.22.1      |
+
+---
+
+## Node.js のセットアップ
+
+テーマの開発・ビルドには Node.js を使用します。プロジェクトルートの `.nvmrc` でバージョンを指定し、両テーマの GitHub Actions も同じファイルを参照します。
+
+Node.js 24.22.1 は、[2026年10月21日公開のセキュリティ修正版](https://nodejs.org/en/blog/release/v24.22.1/)です。
+
+`nvm` を導入済みの環境で、プロジェクトルートから以下を実行してください。
+
+```bash
+nvm install     # .nvmrc に指定された Node.js をインストール
+nvm use         # このターミナルで使用する Node.js を切り替える
+node --version  # v24.22.1 を確認
+```
+
+新しいターミナルで作業する場合も、依存パッケージのインストールやビルドの前に、プロジェクトルートで `nvm use` を実行してください。
+
+新しいターミナルの既定値も揃える場合は、一度だけ `nvm alias default 24.22.1` を実行します。現在のターミナルを既定値に切り替えるコマンドは `nvm use default` です。VS Code などが古い Node.js の実行パスを引き継いでいる場合は、アプリ自体を完全終了して開き直してください。
 
 ---
 
@@ -238,6 +259,7 @@ word-press-docker/
 │       └── custom.ini          ← PHP 設定
 ├── Dockerfile
 ├── docker-compose.yaml
+├── .nvmrc                      ← ローカル・CI 共通の Node.js バージョン
 └── .env                        ← DB 接続情報（Git 管理外）
 ```
 
@@ -249,7 +271,7 @@ word-press-docker/
 
 ### デプロイの流れ
 
-**my-theme**（`src/wp-content/themes/my-theme/**` に変更があった場合）
+**my-theme**（`main` ブランチへのすべての push）
 
 ```
 main ブランチへ push
@@ -259,7 +281,9 @@ main ブランチへ push
        └─ FTPS で my-theme/ をロリポップへ転送
 ```
 
-**medical-theme**（`src/wp-content/themes/medical-theme/**` に変更があった場合）
+**medical-theme**（テーマ配下・ワークフロー・Node.js 設定の変更時）
+
+`src/wp-content/themes/medical-theme/**`、`.github/workflows/deploy-medical-theme.yml`、`.nvmrc` のいずれかに変更を含む `main` ブランチへの push で実行します。`.nvmrc` を更新した場合も、両テーマが指定バージョンの Node.js でビルドされます。
 
 ```
 main ブランチへ push
@@ -286,10 +310,10 @@ main ブランチへ push
 | `FTP_SERVER`             | `ftp.lolipop.jp`                                      | FTP サーバーのホスト名                              |
 | `FTP_USERNAME`           | `your-username`                                       | FTP ユーザー名                                      |
 | `FTP_PASSWORD`           | `your-password`                                       | FTP パスワード                                      |
-| `FTP_REMOTE_DIR`         | `/your-account/html/wp-content/themes/my-theme/`      | my-theme のアップロード先（末尾に `/` が必要）      |
+| `FTP_REMOTE_DIR_PORTFOLIO` | `/your-account/html/wp-content/themes/my-theme/`      | my-theme のアップロード先（末尾に `/` が必要）      |
 | `FTP_REMOTE_DIR_MEDICAL` | `/your-account/html/wp-content/themes/medical-theme/` | medical-theme のアップロード先（末尾に `/` が必要） |
 
-> `FTP_REMOTE_DIR` はロリポップ管理画面の「ホームディレクトリ」を基準に設定してください。
+> `FTP_REMOTE_DIR_PORTFOLIO` はロリポップ管理画面の「ホームディレクトリ」を基準に設定してください。
 > 例: `/your-account/html/wp-content/themes/my-theme/`
 
 #### 3. 動作確認
@@ -471,6 +495,7 @@ docker exec wordpress_app bash -c "cd /var/www/html && wp menu item delete 118 -
 
 ```
 src/wp-content/themes/my-theme/   ← 自分で書いたコードのみ
+src/wp-content/themes/medical-theme/
 ```
 
 ### WordPress 本体を Git 管理しない理由
@@ -509,16 +534,18 @@ WP 本体はバージョンアップで中身が変わります。Git 管理し�
 Git で管理するファイルのみを以下に示します。
 
 ```
-WORD-PRESS-DOCKER/
+word-press-docker/
 ├── docker/
-├── Docks/
+├── docs/
 ├── docker-compose.yaml
 ├── Dockerfile
+├── .nvmrc            ← ローカル・CI 共通の Node.js バージョン
 ├── .env.example      ← .envのサンプル（パスワードなし）
 └── src/
     └── wp-content/
         └── themes/
-            └── my-theme/  ← ここだけ管理
+            ├── my-theme/
+            └── medical-theme/
 ```
 
 > `.env` は Git 管理外です。初回セットアップ時は `.env.example` をコピーして `.env` を作成してください。
