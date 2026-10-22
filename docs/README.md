@@ -536,7 +536,7 @@ Git で管理するファイルのみを以下に示します。
 ```
 word-press-docker/
 ├── docker/
-├── docks/
+├── docs/
 ├── docker-compose.yaml
 ├── Dockerfile
 ├── .nvmrc            ← ローカル・CI 共通の Node.js バージョン
