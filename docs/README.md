@@ -269,6 +269,8 @@ word-press-docker/
 
 `main` ブランチへの push をトリガーに、GitHub Actions が自動でビルド＆ロリポップへデプロイします。
 
+テーマのビルド用 Node.js は `.nvmrc` で指定します。Action 本体の実行環境は各 Action のバージョンに依存するため、checkout・setup-node・FTP-Deploy-Action にも Node.js 24 対応版を使用します。Action 本体の更新は、ワークフロー内の `uses` に指定したバージョンを更新して行います。
+
 ### デプロイの流れ
 
 **my-theme**（`main` ブランチへのすべての push）
