@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - "src/wp-content/themes/medical-theme/**"
+      - ".github/workflows/deploy-medical-theme.yml"
+      - ".nvmrc"
 
 jobs:
   deploy:
@@ -20,7 +22,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version-file: ".nvmrc"
           cache: "npm"
           cache-dependency-path: src/wp-content/themes/medical-theme/package-lock.json
 
